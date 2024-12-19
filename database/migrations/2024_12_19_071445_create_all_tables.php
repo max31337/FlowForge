@@ -13,8 +13,16 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('domain')->nullable();
+            $table->string('invitation_code')->unique();
             $table->timestamps();
         });
+
+        Schema::create('invitation_codes', function (Blueprint $table) { 
+            $table->id(); 
+            $table->string('code')->unique(); 
+            $table->foreignId('tenant_id')->constrained()->onDelete('cascade'); 
+            $table->timestamp('expires_at')->nullable(); 
+            $table->timestamps(); });
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
@@ -22,7 +30,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tenant_id')->nullable()->constrained()->onDelete('cascade');            
             $table->rememberToken();
             $table->timestamps();
         });
@@ -181,6 +189,7 @@ return new class extends Migration
         Schema::dropIfExists('reports');
         Schema::dropIfExists('subscriptions');
         Schema::dropIfExists('tenant_settings');
+        Schema::dropIfExists('invitation_codes');
         Schema::dropIfExists('users');
         Schema::dropIfExists('tenants');
         Schema::dropIfExists('roles');
