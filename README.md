@@ -14,6 +14,9 @@
   <img src="https://img.shields.io/badge/Alpine.js-%23005997.svg?style=for-the-badge&logo=alpine.js&logoColor=white" alt="Alpine.js" />
   <img src="https://img.shields.io/badge/Laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel" />
   <img src="https://img.shields.io/badge/Livewire-%234E56A6.svg?style=for-the-badge&logo=livewire&logoColor=white" alt="Livewire" />
+---
+  ### Database
+  <img src="https://img.shields.io/badge/PostgreSQL-%23336791.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
 </div>
 
 ---
@@ -79,6 +82,11 @@
 - Creates interactive components like task creation forms or real-time progress bars without writing JavaScript.
 - Handles real-time data updates for dashboards and tasks.
 
+## ![Database Icon](https://img.shields.io/badge/database-%23005997.svg?style=for-the-badge&logo=database&logoColor=white) Database
+### 🗄️ **PostgreSQL**
+- The primary database system, ensuring robustness and scalability.
+- Manages multi-tenant data isolation and integrity.
+
 ---
 
 ## 🧩 **Optional Features for Advanced Use**
@@ -98,9 +106,9 @@
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/YOUR-USERNAME/multi-tenant-dashboard.git
-   cd multi-tenant-dashboard
-   ```
+   git clone https://github.com/max31337/flowforge.git
+   cd flowforge
+
 
 2. **Install Dependencies:**
    ```bash
