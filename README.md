@@ -82,7 +82,7 @@
 - Creates interactive components like task creation forms or real-time progress bars without writing JavaScript.
 - Handles real-time data updates for dashboards and tasks.
 
-## ![Database Icon](https://img.shields.io/badge/database-%23005997.svg?style=for-the-badge&logo=database&logoColor=white) Database
+## ![Database Icon](https://img.shields.io/badge/database-%23005997.svg?style=for-the-badge&logo=database&logoColor=white)
 ### 🗄️ **PostgreSQL**
 - The primary database system, ensuring robustness and scalability.
 - Manages multi-tenant data isolation and integrity.
