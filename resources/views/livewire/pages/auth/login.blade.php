@@ -62,6 +62,9 @@ new #[Layout('layouts.guest')] class extends Component
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
+            
+            <!-- Socialite Buttons Component -->
+            <livewire:auth.social-login-buttons />
 
             <x-primary-button class="ms-3">
                 {{ __('Log in') }}

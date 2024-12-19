@@ -69,4 +69,9 @@ class LoginForm extends Form
     {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
     }
+
+    public function render()
+    {
+         return view('livewire.auth.login-form');
+    }
 }
