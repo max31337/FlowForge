@@ -8,16 +8,19 @@
 
 ---
 
-## The TALL Tech Stack
+## <div align="center" style="font-size: 2em;">The TALL Tech Stack</div>
 <div align="center">
   <img src="https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/Alpine.js-%23005997.svg?style=for-the-badge&logo=alpine.js&logoColor=white" alt="Alpine.js" />
   <img src="https://img.shields.io/badge/Laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel" />
   <img src="https://img.shields.io/badge/Livewire-%234E56A6.svg?style=for-the-badge&logo=livewire&logoColor=white" alt="Livewire" />
----
-  ### Database
+</div>
+
+## <div align="center" style="font-size: 2em;">Database</div>
+<div align="center">
   <img src="https://img.shields.io/badge/PostgreSQL-%23336791.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
 </div>
+
 
 ---
 
