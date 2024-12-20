@@ -35,8 +35,6 @@ return [
         ],
     ],
 
-<<<<<<< HEAD
-=======
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
@@ -48,5 +46,4 @@ return [
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
         'redirect' => env('GITHUB_REDIRECT_URL'), ],
 
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
 ];
