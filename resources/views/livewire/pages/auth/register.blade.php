@@ -84,8 +84,6 @@ new #[Layout('layouts.guest')] class extends Component
                 {{ __('Register') }}
             </x-primary-button>
         </div>
-<<<<<<< HEAD
-=======
 
         <div class="flex space-between items-center justify-start mt-4 space-x-4">
             <!-- Socialite Buttons Component -->
@@ -94,6 +92,5 @@ new #[Layout('layouts.guest')] class extends Component
               <livewire:auth.social-login-buttons />
             </div>
       </div>
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
     </form>
 </div>

@@ -1,6 +1,5 @@
 <x-app-layout>
     <x-slot name="header">
-<<<<<<< HEAD
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Profile') }}
@@ -21,11 +20,6 @@
                 </button>
             </div>
         </div>
-=======
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
-        </h2>
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
     </x-slot>
 
     <div class="py-12">

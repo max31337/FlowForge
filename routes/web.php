@@ -1,11 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
-
-Route::view('/', 'welcome');
-
-=======
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 
@@ -13,7 +8,6 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 Route::view('/', 'welcome');
 
 // Dashboard and profile routes with middleware
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -22,9 +16,7 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-<<<<<<< HEAD
-require __DIR__.'/auth.php';
-=======
+
 // Traditional authentication routes
 require __DIR__.'/auth.php';
 
@@ -47,4 +39,3 @@ Route::middleware('auth')->group(function () {
     Route::view('confirm-password', 'pages.auth.confirm-password')
         ->name('password.confirm');
 });
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
