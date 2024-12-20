@@ -42,7 +42,11 @@ return [
             'scheme' => env('MAIL_SCHEME'),
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST'),
+<<<<<<< HEAD
             'port' => env('MAIL_PORT'),
+=======
+            'port' => env('MAIL_PORT', 2525),
+>>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
@@ -109,7 +113,11 @@ return [
     */
 
     'from' => [
+<<<<<<< HEAD
         'address' => env('MAIL_FROM_ADDRESS', 'system@flowforge.com'),
+=======
+        'address' => env('MAIL_FROM_ADDRESS', 'auth@gflowforge.com'),
+>>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
         'name' => env('MAIL_FROM_NAME', 'FlowForge'),
     ],
 

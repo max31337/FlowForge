@@ -84,5 +84,16 @@ new #[Layout('layouts.guest')] class extends Component
                 {{ __('Register') }}
             </x-primary-button>
         </div>
+<<<<<<< HEAD
+=======
+
+        <div class="flex space-between items-center justify-start mt-4 space-x-4">
+            <!-- Socialite Buttons Component -->
+            <p class="text-sm text-gray-600 dark:text-gray-400">{{ __('Or register with') }}</p>
+            <div class="ms-3">
+              <livewire:auth.social-login-buttons />
+            </div>
+      </div>
+>>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
     </form>
 </div>

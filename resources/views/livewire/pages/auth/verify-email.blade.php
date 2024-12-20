@@ -47,12 +47,22 @@ new #[Layout('layouts.guest')] class extends Component
     @endif
 
     <div class="mt-4 flex items-center justify-between">
+<<<<<<< HEAD
         <x-primary-button wire:click="sendVerification">
             {{ __('Resend Verification Email') }}
         </x-primary-button>
+=======
+        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" wire:click="sendVerification">
+            {{ __('Resend Verification Email') }}
+        </button>
+>>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
 
         <button wire:click="logout" type="submit" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
             {{ __('Log Out') }}
         </button>
     </div>
 </div>
+<<<<<<< HEAD
+=======
+?>
+>>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e

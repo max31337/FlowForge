@@ -10,9 +10,19 @@
         "autoprefixer": "^10.4.2",
         "axios": "^1.7.4",
         "concurrently": "^9.0.1",
+<<<<<<< HEAD
         "laravel-vite-plugin": "^1.0",
         "postcss": "^8.4.31",
         "tailwindcss": "^3.1.0",
         "vite": "^6.0"
+=======
+        "laravel-vite-plugin": "^1.1.1",
+        "postcss": "^8.4.31",
+        "tailwindcss": "^3.1.0",
+        "vite": "^6.0.3"
+    },
+    "dependencies": {
+        "alpinejs": "^3.14.7"
+>>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
     }
 }

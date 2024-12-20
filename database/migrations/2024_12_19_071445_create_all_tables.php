@@ -37,6 +37,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
+<<<<<<< HEAD
         Schema::create('user_settings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
@@ -46,6 +47,8 @@ return new class extends Migration
         });
         
 
+=======
+>>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->index();
             $table->string('token');
@@ -202,7 +205,10 @@ return new class extends Migration
         Schema::dropIfExists('tenant_settings');
         Schema::dropIfExists('invitation_codes');
         Schema::dropIfExists('users');
+<<<<<<< HEAD
         Schema::dropIfExists('users_settings');
+=======
+>>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
         Schema::dropIfExists('tenants');
         Schema::dropIfExists('roles');
         Schema::dropIfExists('permissions');

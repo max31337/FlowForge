@@ -85,10 +85,17 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
+<<<<<<< HEAD
             'host' => env('DB_HOST'),
             'port' => env('DB_PORT'),
             'database' => env('DB_DATABASE'),
             'username' => env('DB_USERNAME'),
+=======
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'flowforgedb'),
+            'username' => env('DB_USERNAME', 'postgres'),
+>>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
             'password' => env('DB_PASSWORD'),
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
