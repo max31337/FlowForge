@@ -122,5 +122,17 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+        
+    'providers' => [
+        // Other Service Providers
+
+        Laravel\Socialite\SocialiteServiceProvider::class,
+    ],
+
+    'aliases' => [
+        // Other Aliases
+
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+    ],
 
 ];

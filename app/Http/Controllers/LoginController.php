@@ -3,32 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class LoginController extends Controller
 {
-    public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->intended('dashboard');  
-        }
-
-        return redirect()->back()->with('error', 'Invalid credentials');
-    }
-
     public function redirectToProvider($provider)
     {
         return Socialite::driver($provider)->redirect();
@@ -36,19 +16,22 @@ class LoginController extends Controller
 
     public function handleProviderCallback($provider)
     {
-        $socialUser = Socialite::driver($provider)->user();
+        $user = Socialite::driver($provider)->user();
 
-        $user = User::updateOrCreate(
-            ['provider_id' => $socialUser->getId()],
-            [
-                'name' => $socialUser->getName(),
-                'email' => $socialUser->getEmail(),
-                'avatar' => $socialUser->getAvatar(),
+        $existingUser = User::where('provider_id', $user->getId())->first();
+
+        if ($existingUser) {
+            Auth::login($existingUser, true);
+        } else {
+            $newUser = User::create([
+                'name' => $user->getName(),
+                'email' => $user->getEmail(),
                 'provider' => $provider,
-            ]
-        );
+                'provider_id' => $user->getId(),
+            ]);
 
-        Auth::login($user, true);
+            Auth::login($newUser, true);
+        }
 
         return redirect()->route('dashboard');
     }
