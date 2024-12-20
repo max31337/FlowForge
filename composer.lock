@@ -512,8 +512,6 @@
             "time": "2023-10-06T06:47:41+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "firebase/php-jwt",
             "version": "v6.10.2",
             "source": {
@@ -577,7 +575,6 @@
             "time": "2024-11-24T11:22:49+00:00"
         },
         {
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
             "name": "fruitcake/php-cors",
             "version": "v1.3.0",
             "source": {
@@ -1457,8 +1454,6 @@
             "time": "2024-12-16T15:26:28+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "laravel/socialite",
             "version": "v5.16.1",
             "source": {
@@ -1531,7 +1526,6 @@
             "time": "2024-12-11T16:43:51+00:00"
         },
         {
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
             "name": "laravel/tinker",
             "version": "v2.10.0",
             "source": {
@@ -1598,8 +1592,6 @@
             "time": "2024-09-23T13:32:56+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "laravel/ui",
             "version": "v4.6.0",
             "source": {
@@ -1663,7 +1655,6 @@
             "time": "2024-11-21T15:06:41+00:00"
         },
         {
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
             "name": "league/commonmark",
             "version": "2.6.0",
             "source": {
@@ -2041,8 +2032,6 @@
             "time": "2024-09-21T08:32:55+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "league/oauth1-client",
             "version": "v1.11.0",
             "source": {
@@ -2119,7 +2108,6 @@
             "time": "2024-12-10T19:59:05+00:00"
         },
         {
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
             "name": "league/uri",
             "version": "7.5.1",
             "source": {
@@ -2587,13 +2575,10 @@
             ],
             "type": "library",
             "extra": {
-<<<<<<< HEAD
-=======
                 "branch-alias": {
                     "dev-master": "3.x-dev",
                     "dev-2.x": "2.x-dev"
                 },
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
                 "laravel": {
                     "providers": [
                         "Carbon\\Laravel\\ServiceProvider"
@@ -2603,13 +2588,6 @@
                     "includes": [
                         "extension.neon"
                     ]
-<<<<<<< HEAD
-                },
-                "branch-alias": {
-                    "dev-2.x": "2.x-dev",
-                    "dev-master": "3.x-dev"
-=======
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
                 }
             },
             "autoload": {
@@ -2954,8 +2932,6 @@
             "time": "2024-11-21T10:39:51+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "paragonie/constant_time_encoding",
             "version": "v3.0.0",
             "source": {
@@ -3073,7 +3049,6 @@
             "time": "2020-10-15T08:29:30+00:00"
         },
         {
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
             "name": "phpoption/phpoption",
             "version": "1.9.3",
             "source": {
@@ -3149,8 +3124,6 @@
             "time": "2024-07-20T21:41:07+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "phpseclib/phpseclib",
             "version": "3.0.43",
             "source": {
@@ -3310,7 +3283,6 @@
             "time": "2021-02-03T23:26:27+00:00"
         },
         {
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
             "name": "psr/clock",
             "version": "1.0.0",
             "source": {

@@ -7,16 +7,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-<<<<<<< HEAD
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
-=======
-        "doctrine/dbal": "^4.2",
-        "laravel/framework": "^11.31",
-        "laravel/socialite": "^5.16",
-        "laravel/tinker": "^2.9",
-        "laravel/ui": "^4.6",
->>>>>>> 50fb32b4a407c00bd39cc6e2dac8d4ff35c85b7e
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0"
     },
