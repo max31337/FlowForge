@@ -12,7 +12,7 @@ class TenantDashboard extends Component
    public $tenantmembers;
 
 public function mount(){
- $this->widgets = widgetinfo()
+ $this->widgets = getWidgetinfo()
 }
 
     public function render()
