@@ -6,7 +6,8 @@ use Livewire\Component;
  
  public $tenantmembers
 
-
+public function mount(){
+ $this->tenantmembers = getTenantmembers()
 
 class TenantList extends Component
 {
