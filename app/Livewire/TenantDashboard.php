@@ -13,10 +13,13 @@ class TenantDashboard extends Component
 
 public function mount(){
  $this->widgets = getWidgetinfo()
+$this->tenantinfo = getTenantinfo()
+&this->tenantmembers = getTenantmembers()
 }
 
     public function render()
     {
         return view('livewire.tenant-dashboard');
+        
     }
 }
