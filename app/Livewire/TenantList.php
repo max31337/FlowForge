@@ -3,6 +3,10 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+ 
+ public $tenantmembers
+
+
 
 class TenantList extends Component
 {
