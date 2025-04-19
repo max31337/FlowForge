@@ -14,12 +14,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
-
-    $this->app->bind(TenantRepositoryInterface::class, TenantRepository::class);
-}
-
+        // Repositories
+        $this->app->bind(TenantRepositoryInterface::class, TenantRepository::class);
     }
+
 
     /**
      * Bootstrap any application services.
