@@ -3,7 +3,7 @@
 namespace App\Repositories\Tenant;
 
 use App\Models\Tenant;
-use App\Repositories\Contracts\TenantRepositoryInterface;
+use App\Repositories\Tenant\TenantRepositoryInterface;
 use Illuminate\Support\Collection;
 
 class TenantRepository implements TenantRepositoryInterface
