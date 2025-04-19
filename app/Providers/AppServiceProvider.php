@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         // Repositories
         $this->app->bind(TenantRepositoryInterface::class, TenantRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
 
     }
 
