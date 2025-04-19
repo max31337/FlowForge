@@ -2,39 +2,48 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, Notifiable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
         'provider',
         'provider_id',
-        'tenant_id'
+        'tenant_id',
     ];
 
-    protected $guarded = [
-        'id',
-        'email_verified_at',
-        'remember_token'
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    /** Relationships */
 
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    public function settings()
+    {
+        return $this->hasOne(UserSetting::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
     }
 
     public function tasks()
@@ -42,26 +51,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Task::class);
     }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function notifications()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Notification::class);
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(ActivityLog::class);
     }
 }
