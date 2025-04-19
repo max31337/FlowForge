@@ -14,6 +14,9 @@ use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\Contracts\TaskRepositoryInterface;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
 
+use App\Services\Tenant\TenantServiceInterface;
+use App\Services\Tenant\TenantService;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
         $this->app->bind(ProjectRepositoryInterface::class, ProjectRepository::class);
+
+        // Services
+        $this->app->bind(TenantServiceInterface::class, TenantService::class);
+
 
     }
 
