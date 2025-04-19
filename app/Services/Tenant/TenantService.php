@@ -3,6 +3,7 @@
 namespace App\Services\Tenant;
 
 use App\Models\Tenant;
+use App\Repositories\Tenant\TenantRepositoryInterface;
 use Illuminate\Support\Collection;
 
 class TenantService implements TenantServiceInterface
