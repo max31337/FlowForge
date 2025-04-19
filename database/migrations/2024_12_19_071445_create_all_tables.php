@@ -24,6 +24,18 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable(); 
             $table->timestamps(); });
 
+Schema::create('role_user', function (Blueprint $table) {
+    $table->foreignId('role_id')->constrained()->onDelete('cascade');
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->primary(['role_id', 'user_id']);
+});
+
+Schema::create('permission_role', function (Blueprint $table) {
+    $table->foreignId('permission_id')->constrained()->onDelete('cascade');
+    $table->foreignId('role_id')->constrained()->onDelete('cascade');
+    $table->primary(['permission_id', 'role_id']);
+});
+
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -68,6 +80,8 @@ return new class extends Migration
             $table->dateTime('due_date');
             $table->string('status')->default('pending');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+$table->foreignId('project_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
@@ -201,7 +215,7 @@ return new class extends Migration
         Schema::dropIfExists('tenant_settings');
         Schema::dropIfExists('invitation_codes');
         Schema::dropIfExists('users');
-        Schema::dropIfExists('users_settings');
+        Schema::dropIfExists('user_settings');
         Schema::dropIfExists('tenants');
         Schema::dropIfExists('roles');
         Schema::dropIfExists('permissions');
