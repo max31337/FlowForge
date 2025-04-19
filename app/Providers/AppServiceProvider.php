@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\Contracts\TenantRepositoryInterface;
+use App\Repositories\Eloquent\TenantRepository;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,6 +15,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+
+    $this->app->bind(TenantRepositoryInterface::class, TenantRepository::class);
+}
+
     }
 
     /**
