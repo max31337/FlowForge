@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,24 +14,40 @@ return new class extends Migration
             $table->string('domain')->nullable();
             $table->string('invitation_code')->unique();
             $table->timestamps();
+            $table->softDeletes();
         });
 
-        Schema::create('invitation_codes', function (Blueprint $table) { 
-            $table->id(); 
-            $table->string('code')->unique(); 
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade'); 
-            $table->timestamp('expires_at')->nullable(); 
-            $table->timestamps(); });
-            
+        Schema::create('invitation_codes', function (Blueprint $table) {
+            $table->id();
+            $table->string('code')->unique();
+            $table->foreignId('tenant_id')->constrained()->onDelete('cascade')->index();
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->timestamps();
+        });
+
+        Schema::create('permissions', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->timestamps();
+        });
+
         Schema::create('role_user', function (Blueprint $table) {
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->primary(['role_id', 'user_id']);});
+            $table->primary(['role_id', 'user_id']);
+        });
 
         Schema::create('permission_role', function (Blueprint $table) {
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
-            $table->primary(['permission_id', 'role_id']);});
+            $table->primary(['permission_id', 'role_id']);
+        });
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
@@ -42,14 +57,15 @@ return new class extends Migration
             $table->string('password');
             $table->string('provider')->nullable();
             $table->string('provider_id')->nullable();
-            $table->foreignId('tenant_id')->nullable()->constrained()->onDelete('cascade');            
+            $table->foreignId('tenant_id')->nullable()->constrained()->onDelete('cascade')->index();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('user_settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->index();
             $table->string('theme')->default('light');
             $table->boolean('dark_mode')->default(false);
             $table->timestamps();
@@ -64,11 +80,20 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade')->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+        });
+
+        Schema::create('projects', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->text('description');
+            $table->foreignId('tenant_id')->constrained()->onDelete('cascade')->index();
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('tasks', function (Blueprint $table) {
@@ -76,60 +101,42 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->dateTime('due_date');
-            $table->string('status')->default('pending');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('project_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            $table->string('status')->default('pending')->index();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->index();
+            $table->foreignId('project_id')->nullable()->constrained()->onDelete('cascade')->index();
+            $table->foreignId('tenant_id')->constrained()->onDelete('cascade')->index();
             $table->timestamps();
-        });
-
-        Schema::create('projects', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->text('description');
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->index();
             $table->text('message');
             $table->timestamps();
         });
 
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tenant_id')->constrained()->onDelete('cascade')->index();
             $table->string('type');
             $table->text('data');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tenant_id')->constrained()->onDelete('cascade')->index();
             $table->string('plan');
             $table->timestamps();
         });
 
         Schema::create('tenant_settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tenant_id')->constrained()->onDelete('cascade')->index();
             $table->string('theme')->default('light');
             $table->boolean('feature_enabled')->default(true);
-            $table->timestamps();
-        });
-
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
-        });
-
-        Schema::create('permissions', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
             $table->timestamps();
         });
 
@@ -141,15 +148,21 @@ return new class extends Migration
 
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('task_id')->constrained()->onDelete('cascade');
+            $table->foreignId('task_id')->constrained()->onDelete('cascade')->index();
             $table->string('file_path');
             $table->string('file_name');
+            $table->string('mime_type')->nullable();
+            $table->bigInteger('size')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->index();
+            $table->string('action_type');
+            $table->unsignedBigInteger('related_id')->nullable();
+            $table->string('related_type')->nullable();
             $table->text('activity');
             $table->timestamps();
         });
@@ -202,29 +215,29 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists('job_batches');
+        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('cache_locks');
+        Schema::dropIfExists('cache');
+        Schema::dropIfExists('activity_logs');
+        Schema::dropIfExists('files');
+        Schema::dropIfExists('categories');
+        Schema::dropIfExists('tenant_settings');
+        Schema::dropIfExists('subscriptions');
+        Schema::dropIfExists('reports');
+        Schema::dropIfExists('notifications');
         Schema::dropIfExists('tasks');
         Schema::dropIfExists('projects');
-        Schema::dropIfExists('notifications');
-        Schema::dropIfExists('reports');
-        Schema::dropIfExists('subscriptions');
-        Schema::dropIfExists('tenant_settings');
-        Schema::dropIfExists('invitation_codes');
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('user_settings');
-        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('users');
         Schema::dropIfExists('permission_role');
-        Schema::dropIfExists('tenants');
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('role_user');
         Schema::dropIfExists('permissions');
-        Schema::dropIfExists('categories');
-        Schema::dropIfExists('files');
-        Schema::dropIfExists('activity_logs');
-        Schema::dropIfExists('cache');
-        Schema::dropIfExists('cache_locks');
-        Schema::dropIfExists('jobs');
-        Schema::dropIfExists('job_batches');
-        Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists('roles');
+        Schema::dropIfExists('invitation_codes');
+        Schema::dropIfExists('tenants');
     }
 };
