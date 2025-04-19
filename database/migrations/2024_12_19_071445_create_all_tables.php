@@ -213,6 +213,8 @@ return new class extends Migration
         Schema::dropIfExists('invitation_codes');
         Schema::dropIfExists('users');
         Schema::dropIfExists('user_settings');
+        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('permission_role');
         Schema::dropIfExists('tenants');
         Schema::dropIfExists('roles');
         Schema::dropIfExists('permissions');
