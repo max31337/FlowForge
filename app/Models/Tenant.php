@@ -1,52 +1,64 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Tenant extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'domain'];
-    public static function boot()
-    {
-        parent::boot();
-        
-        static::creating(function ($tenant) {
-            if (!$tenant->slug) {
-                $tenant->slug = \Str::slug($tenant->name);
-            }
-        });
-    }
+    protected $fillable = [
+        'name',
+        'slug',
+        'domain',
+        'invitation_code',
+    ];
 
+    /**
+     * Relationships
+     */
+
+    // A tenant has many users
     public function users()
     {
         return $this->hasMany(User::class);
     }
 
-    public function projects()
+    // A tenant has many invitation codes
+    public function invitationCodes()
     {
-        return $this->hasMany(Project::class);
+        return $this->hasMany(InvitationCode::class);
     }
 
-    public function tasks()
-    {
-        return $this->hasManyThrough(Task::class, Project::class);
-    }
-
+    // A tenant has one settings record
     public function settings()
     {
         return $this->hasOne(TenantSetting::class);
     }
 
-    // Method to check if the tenant has a specific domain or slug
-    public static function findByDomainOrSlug($domain)
+    // A tenant has many projects
+    public function projects()
     {
-        return static::where('domain', $domain)
-            ->orWhere('slug', $domain)
-            ->firstOrFail();
+        return $this->hasMany(Project::class);
+    }
+
+    // A tenant has many tasks (via polymorphism or directly)
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    // A tenant has many reports
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
+
+    // A tenant has one subscription
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class);
     }
 }
