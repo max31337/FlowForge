@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositories\Interfaces;
+namespace App\Repositories\Task;
 
 use App\Models\Task;
 use Illuminate\Support\Collection;
