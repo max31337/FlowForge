@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'ensure.tenant.user' => \App\Http\Middleware\EnsureTenantUser::class,
+            'prevent.tenant.access' => \App\Http\Middleware\PreventAccessFromTenantDomains::class,
+            'permission' => \App\Http\Middleware\CheckPermission::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -27,6 +27,7 @@ class User extends Authenticatable
         'provider_id',
         'avatar',
         'tenant_id',
+        'role_id',
     ];
 
     /**
@@ -58,6 +59,14 @@ class User extends Authenticatable
     public function tenant(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    /**
+     * Get the role assigned to the user.
+     */
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 
     /**
@@ -98,5 +107,83 @@ class User extends Authenticatable
         }
 
         return $query;
+    }
+
+    /**
+     * Check if user has a specific role.
+     */
+    public function hasRole(string $roleName): bool
+    {
+        return $this->role && $this->role->name === $roleName;
+    }
+
+    /**
+     * Check if user has any of the given roles.
+     */
+    public function hasAnyRole(array $roles): bool
+    {
+        return $this->role && in_array($this->role->name, $roles);
+    }
+
+    /**
+     * Check if user has a specific permission.
+     */
+    public function hasPermission(string $permission): bool
+    {
+        return $this->role && $this->role->hasPermission($permission);
+    }
+
+    /**
+     * Check if user has any of the given permissions.
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        if (!$this->role) {
+            return false;
+        }
+
+        foreach ($permissions as $permission) {
+            if ($this->role->hasPermission($permission)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user is tenant owner.
+     */
+    public function isOwner(): bool
+    {
+        return $this->hasRole('owner');
+    }
+
+    /**
+     * Check if user is tenant admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasAnyRole(['owner', 'admin']);
+    }
+
+    /**
+     * Check if user is central admin.
+     */
+    public function isCentralAdmin(): bool
+    {
+        return $this->role && $this->role->isCentralAdmin();
+    }
+
+    /**
+     * Assign role to user.
+     */
+    public function assignRole(string|Role $role): void
+    {
+        if (is_string($role)) {
+            $role = Role::where('name', $role)->firstOrFail();
+        }
+
+        $this->update(['role_id' => $role->id]);
     }
 }

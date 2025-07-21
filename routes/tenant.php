@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Tenant\DashboardController;
+use App\Http\Controllers\Tenant\UserManagementController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -31,12 +33,31 @@ Route::middleware([
     // Tenant authentication routes (register, login, etc.)
     require __DIR__.'/auth.php';
     
-    // Tenant Dashboard - requires authentication
-    Route::get('/dashboard', function () {
-        return view('dashboard', [
-            'tenant' => tenant(),
-            'tenantId' => tenant('id'),
-            'tenantName' => tenant('name'),
-        ]);
-    })->middleware(['auth', 'verified'])->name('tenant.dashboard');
+    // Authenticated tenant routes
+    Route::middleware(['auth', 'verified'])->group(function () {
+        // Tenant Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('tenant.dashboard');
+        
+        // User management routes (requires manage_users permission)
+        Route::middleware('permission:manage_users')->group(function () {
+            Route::get('/users', [UserManagementController::class, 'index'])->name('tenant.users.index');
+            Route::get('/users/{user}/edit-role', [UserManagementController::class, 'editRole'])->name('tenant.users.edit-role');
+            Route::patch('/users/{user}/role', [UserManagementController::class, 'updateRole'])->name('tenant.users.update-role');
+        });
+        
+        // Project management routes (requires manage_projects permission)
+        Route::middleware('permission:manage_projects')->group(function () {
+            // Add project management routes here
+        });
+        
+        // Task management routes (requires manage_tasks permission) 
+        Route::middleware('permission:manage_tasks')->group(function () {
+            // Add task management routes here
+        });
+        
+        // Admin-only routes (requires owner or admin role)
+        Route::middleware('role:owner,admin')->group(function () {
+            // Tenant settings, billing, etc.
+        });
+    });
 });

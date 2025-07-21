@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\TenantController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,8 +19,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Central admin routes (if needed)
-// Route::get('/admin', ...)->middleware(['auth']);
+// Central admin routes - protected from tenant domains
+Route::middleware([
+    'web',
+    'prevent.tenant.access',
+    'auth',
+    'verified',
+    'role:central_admin'
+    
+])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Tenant management
+    Route::resource('tenants', TenantController::class);
+    Route::patch('tenants/{tenant}/toggle-status', [TenantController::class, 'toggleStatus'])
+        ->name('tenants.toggle-status');
+});
 
 // For development/testing - remove in production
 Route::get('/dashboard', function () {
