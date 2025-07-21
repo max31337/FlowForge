@@ -38,15 +38,34 @@ class SocialiteController extends Controller
         }
 
         try {
+            // Add debugging
+            \Log::info('OAuth callback started', ['provider' => $provider]);
+            
             $socialUser = Socialite::driver($provider)->user();
+            
+            // Add debugging
+            \Log::info('OAuth user retrieved', [
+                'provider' => $provider,
+                'social_user_id' => $socialUser->getId(),
+                'email' => $socialUser->getEmail(),
+                'name' => $socialUser->getName()
+            ]);
+            
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'OAuth authentication failed. Please try again.');
+            \Log::error('OAuth authentication failed', [
+                'provider' => $provider,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->route('login')->with('error', 'OAuth authentication failed: ' . $e->getMessage());
         }
 
         // Check if user already exists with this email
         $existingUser = User::where('email', $socialUser->getEmail())->first();
 
         if ($existingUser) {
+            \Log::info('Existing user found', ['user_id' => $existingUser->id]);
+            
             // Update OAuth info if user exists but doesn't have provider info
             if (!$existingUser->provider) {
                 $existingUser->update([
@@ -57,21 +76,36 @@ class SocialiteController extends Controller
             }
             
             Auth::login($existingUser);
+            \Log::info('User logged in', ['user_id' => $existingUser->id]);
             return redirect()->intended('dashboard');
         }
 
         // Create new user
-        $user = User::create([
-            'name' => $socialUser->getName() ?: $socialUser->getNickname(),
-            'email' => $socialUser->getEmail(),
-            'provider' => $provider,
-            'provider_id' => $socialUser->getId(),
-            'avatar' => $socialUser->getAvatar(),
-            'password' => Hash::make(Str::random(24)), // Random password since they use OAuth
-            'email_verified_at' => now(), // Auto-verify OAuth users
-        ]);
+        try {
+            \Log::info('Creating new user');
+            
+            $user = User::create([
+                'name' => $socialUser->getName() ?: $socialUser->getNickname(),
+                'email' => $socialUser->getEmail(),
+                'provider' => $provider,
+                'provider_id' => $socialUser->getId(),
+                'avatar' => $socialUser->getAvatar(),
+                'password' => Hash::make(Str::random(24)), // Random password since they use OAuth
+                'email_verified_at' => now(), // Auto-verify OAuth users
+            ]);
 
-        Auth::login($user);
-        return redirect()->intended('dashboard');
+            \Log::info('New user created', ['user_id' => $user->id]);
+
+            Auth::login($user);
+            \Log::info('New user logged in', ['user_id' => $user->id]);
+            return redirect()->intended('dashboard');
+            
+        } catch (\Exception $e) {
+            \Log::error('User creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->route('login')->with('error', 'Failed to create user account: ' . $e->getMessage());
+        }
     }
 }
