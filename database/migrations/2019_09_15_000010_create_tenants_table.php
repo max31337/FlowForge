@@ -16,9 +16,15 @@ class CreateTenantsTable extends Migration
     public function up(): void
     {
         Schema::create('tenants', function (Blueprint $table) {
-            $table->string('id')->primary();
-
-            // your custom columns may go here
+            $table->uuid('id')->primary();
+            
+            // Custom tenant columns
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('email')->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
+            $table->string('plan')->default('free');
+            $table->boolean('active')->default(true);
 
             $table->timestamps();
             $table->json('data')->nullable();
