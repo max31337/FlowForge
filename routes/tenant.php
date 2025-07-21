@@ -22,10 +22,14 @@ Route::middleware([
     'web',
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
+    'ensure.tenant.user',
 ])->group(function () {
     Route::get('/', function () {
         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     });
+    
+    // Tenant authentication routes (register, login, etc.)
+    require __DIR__.'/auth.php';
     
     // Tenant Dashboard - requires authentication
     Route::get('/dashboard', function () {

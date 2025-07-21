@@ -51,4 +51,52 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the tenant that the user belongs to.
+     */
+    public function tenant(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    /**
+     * Check if user belongs to a specific tenant.
+     */
+    public function belongsToTenant(string $tenantId): bool
+    {
+        return $this->tenant_id === $tenantId;
+    }
+
+    /**
+     * Check if user belongs to current tenant context.
+     */
+    public function belongsToCurrentTenant(): bool
+    {
+        if (!tenancy()->initialized) {
+            return true; // No tenant context, allow access
+        }
+
+        return $this->belongsToTenant(tenant('id'));
+    }
+
+    /**
+     * Scope query to users of a specific tenant.
+     */
+    public function scopeOfTenant($query, string $tenantId)
+    {
+        return $query->where('tenant_id', $tenantId);
+    }
+
+    /**
+     * Scope query to users of current tenant.
+     */
+    public function scopeOfCurrentTenant($query)
+    {
+        if (tenancy()->initialized) {
+            return $query->where('tenant_id', tenant('id'));
+        }
+
+        return $query;
+    }
 }

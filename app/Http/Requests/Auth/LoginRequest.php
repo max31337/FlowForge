@@ -49,6 +49,21 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Check tenant membership if we're in a tenant context
+        if (tenancy()->initialized) {
+            $user = Auth::user();
+            $currentTenantId = tenant('id');
+            
+            if ($user->tenant_id !== $currentTenantId) {
+                Auth::logout();
+                RateLimiter::hit($this->throttleKey());
+                
+                throw ValidationException::withMessages([
+                    'email' => 'You do not have access to this organization.',
+                ]);
+            }
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

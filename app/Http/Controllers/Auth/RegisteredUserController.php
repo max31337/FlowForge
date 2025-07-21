@@ -35,11 +35,18 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+        $userData = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-        ]);
+        ];
+        
+        // If we're in tenant context, assign tenant_id
+        if (tenancy()->initialized) {
+            $userData['tenant_id'] = tenant('id');
+        }
+        
+        $user = User::create($userData);
 
         event(new Registered($user));
 

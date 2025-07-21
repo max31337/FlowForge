@@ -11,7 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'ensure.tenant.user' => \App\Http\Middleware\EnsureTenantUser::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
