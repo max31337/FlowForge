@@ -12,6 +12,25 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     use HasDatabase, HasDomains;
 
     /**
+     * The custom columns that should be available as attributes.
+     * These will be automatically handled by Stancl.
+     *
+     * @return array
+     */
+    public static function getCustomColumns(): array
+    {
+        return [
+            'id',
+            'name',
+            'slug',
+            'email',
+            'trial_ends_at',
+            'plan',
+            'active',
+        ];
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
