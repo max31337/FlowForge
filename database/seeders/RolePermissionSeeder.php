@@ -15,6 +15,15 @@ class RolePermissionSeeder extends Seeder
     {
         $this->command = $command;
     }
+
+    /**
+     * Make this seeder invokable for artisan db:seed commands.
+     */
+    public function __invoke(array $parameters = [])
+    {
+        $this->run();
+    }
+
     /**
      * Run the database seeds.
      */

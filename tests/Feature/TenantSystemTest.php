@@ -16,11 +16,11 @@ class TenantSystemTest extends TestCase
         // Run the system bootstrap seeder
         $this->artisan('db:seed', ['--class' => 'Database\\Seeders\\SystemBootstrapSeeder']);
         
-        $systemTenant = Tenant::where('slug', 'system')->first();
+        $systemTenant = Tenant::where('slug', 'flowforge-platform')->first();
         
         $this->assertNotNull($systemTenant);
         $this->assertEquals('FlowForge Platform', $systemTenant->name);
-        $this->assertTrue($systemTenant->is_active);
+        $this->assertTrue($systemTenant->getAttribute('active'));
     }
     
     public function test_superadmin_user_exists()
@@ -32,7 +32,8 @@ class TenantSystemTest extends TestCase
         
         $this->assertNotNull($superadmin);
         $this->assertEquals('Mark Anthony Navarro', $superadmin->name);
-        $this->assertTrue($superadmin->is_superadmin);
+        $this->assertNotNull($superadmin->role);
+        $this->assertEquals('central_admin', $superadmin->role->name);
     }
     
     public function test_tenant_initialization()
@@ -65,8 +66,8 @@ class TenantSystemTest extends TestCase
         $user2 = User::factory()->create(['tenant_id' => $tenant2->id]);
         
         // Test that users belong to correct tenants
-        $this->assertEquals($tenant1->id, $user1->tenant_id);
-        $this->assertEquals($tenant2->id, $user2->tenant_id);
+        $this->assertEquals($tenant1->id, $user1->getAttribute('tenant_id'));
+        $this->assertEquals($tenant2->id, $user2->getAttribute('tenant_id'));
         
         // Test tenant user queries
         $tenant1Users = User::where('tenant_id', $tenant1->id)->get();

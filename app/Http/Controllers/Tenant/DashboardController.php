@@ -15,28 +15,22 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
-        $stats = [
-            'total_projects' => Project::where('tenant_id', tenant('id'))->count(),
-            'total_tasks' => Task::where('tenant_id', tenant('id'))->count(),
-            'pending_tasks' => Task::where('tenant_id', tenant('id'))
-                ->where('status', 'pending')
-                ->count(),
-            'completed_tasks' => Task::where('tenant_id', tenant('id'))
-                ->where('status', 'completed')
-                ->count(),
-            'total_users' => User::where('tenant_id', tenant('id'))->count(),
-        ];
+        // Debug: Check tenancy initialization
+        if (!tenancy()->initialized) {
+            logger()->error('Tenant dashboard accessed without tenancy initialized');
+            abort(403, 'Tenant context not available');
+        }
 
-        $recentProjects = Project::where('tenant_id', tenant('id'))
-            ->orderBy('updated_at', 'desc')
-            ->limit(5)
-            ->get();
+        // Debug: Log tenant info
+        logger()->info('Tenant dashboard accessed', [
+            'tenant_id' => tenant('id'),
+            'tenant_name' => tenancy()->tenant->getAttribute('name'),
+            'user_id' => auth()->id(),
+            'user_email' => auth()->user()?->email,
+        ]);
 
-        $recentTasks = Task::where('tenant_id', tenant('id'))
-            ->orderBy('updated_at', 'desc')
-            ->limit(5)
-            ->get();
-
-        return view('tenant.dashboard', compact('stats', 'recentProjects', 'recentTasks'));
+        // All data is now handled by Livewire components
+        // which ensures proper tenant isolation and real-time updates
+        return view('tenant.dashboard');
     }
 }

@@ -27,7 +27,7 @@ Route::middleware([
     'ensure.tenant.user',
 ])->group(function () {
     Route::get('/', function () {
-        return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
+        return view('tenant.welcome');
     });
     
     // Tenant authentication routes (register, login, etc.)

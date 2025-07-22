@@ -1,0 +1,121 @@
+<?php
+
+namespace App\Livewire\Tenant;
+
+use Livewire\Component;
+
+class QuickActions extends Component
+{
+    public function render()
+    {
+        // Ensure tenant context is available
+        if (!tenancy()->initialized) {
+            return view('livewire.tenant.quick-actions', ['actions' => []]);
+        }
+        
+        $actions = $this->getAvailableActions();
+        
+        return view('livewire.tenant.quick-actions', compact('actions'));
+    }
+
+    private function getAvailableActions(): array
+    {
+        $user = auth()->user();
+        $actions = [];
+
+        // Only show actions if user belongs to current tenant
+        if (!$user || $user->getAttribute('tenant_id') !== tenant('id')) {
+            return [];
+        }
+
+        // Project management actions
+        if ($user->hasPermission('manage_projects')) {
+            $actions[] = [
+                'title' => 'New Project',
+                'description' => 'Create a new project for your team',
+                'icon' => 'fas fa-project-diagram',
+                'color' => 'blue',
+                'action' => 'create-project',
+                'url' => '#', // TODO: Replace with actual route
+            ];
+        }
+
+        // Task management actions
+        if ($user->hasPermission('manage_tasks')) {
+            $actions[] = [
+                'title' => 'New Task',
+                'description' => 'Add a task to an existing project',
+                'icon' => 'fas fa-plus-circle',
+                'color' => 'green',
+                'action' => 'create-task',
+                'url' => '#', // TODO: Replace with actual route
+            ];
+        }
+
+        // User management actions
+        if ($user->hasPermission('manage_users')) {
+            $actions[] = [
+                'title' => 'Manage Users',
+                'description' => 'Invite and manage team members',
+                'icon' => 'fas fa-users',
+                'color' => 'purple',
+                'action' => 'manage-users',
+                'url' => route('tenant.users.index'),
+            ];
+        }
+
+        // Category management actions
+        if ($user->hasPermission('manage_categories')) {
+            $actions[] = [
+                'title' => 'Categories',
+                'description' => 'Organize tasks with categories',
+                'icon' => 'fas fa-tags',
+                'color' => 'indigo',
+                'action' => 'manage-categories',
+                'url' => '#', // TODO: Replace with actual route
+            ];
+        }
+
+        // Reports access
+        if ($user->hasPermission('view_reports')) {
+            $actions[] = [
+                'title' => 'View Reports',
+                'description' => 'Analytics and progress reports',
+                'icon' => 'fas fa-chart-bar',
+                'color' => 'yellow',
+                'action' => 'view-reports',
+                'url' => '#', // TODO: Replace with actual route
+            ];
+        }
+
+        // Settings access (for owners/admins)
+        if ($user->hasPermission('manage_tenant_settings')) {
+            $actions[] = [
+                'title' => 'Settings',
+                'description' => 'Manage tenant configuration',
+                'icon' => 'fas fa-cog',
+                'color' => 'gray',
+                'action' => 'manage-settings',
+                'url' => '#', // TODO: Replace with actual route
+            ];
+        }
+
+        return $actions;
+    }
+
+    public function handleAction($action)
+    {
+        switch ($action) {
+            case 'create-project':
+                $this->dispatch('open-project-modal');
+                break;
+            case 'create-task':
+                $this->dispatch('open-task-modal');
+                break;
+            case 'manage-users':
+                return redirect()->route('tenant.users.index');
+            default:
+                $this->dispatch('info', 'This feature is coming soon!');
+        }
+    }
+}

@@ -18,7 +18,7 @@ class DashboardController extends Controller
         if (!auth()->user() || !auth()->user()->hasRole('central_admin')) {
             abort(403, 'Access denied. Central admin privileges required.');
         }
-    {
+        
         $stats = [
             'total_tenants' => Tenant::count(),
             'active_tenants' => Tenant::where('active', true)->count(),
@@ -36,5 +36,4 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', compact('stats', 'planStats'));
     }
-}
 }

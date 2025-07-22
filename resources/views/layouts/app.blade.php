@@ -14,6 +14,9 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
+        <!-- Livewire Styles -->
+        @livewireStyles
+        
         <!-- Theme initialization script -->
         <script>
             // Initialize theme before page renders
@@ -44,8 +47,11 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                @yield('content')
             </main>
         </div>
+        
+        <!-- Livewire Scripts -->
+        @livewireScripts
     </body>
 </html>
