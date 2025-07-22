@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Debug;
 
 use App\Models\Tenant;
 use App\Models\User;
