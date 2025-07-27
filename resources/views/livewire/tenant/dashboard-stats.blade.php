@@ -23,12 +23,12 @@
         <!-- Loading skeleton -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
             @for($i = 0; $i < 6; $i++)
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 animate-pulse">
+                <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6 animate-pulse">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-gray-200 dark:bg-gray-700 w-12 h-12"></div>
+                        <div class="p-3 rounded-full bg-gray-200 dark:bg-zinc-700 w-12 h-12"></div>
                         <div class="ml-4 flex-1">
-                            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-                            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                            <div class="h-4 bg-gray-200 dark:bg-zinc-700 rounded w-3/4 mb-2"></div>
+                            <div class="h-6 bg-gray-200 dark:bg-zinc-700 rounded w-1/2"></div>
                         </div>
                     </div>
                 </div>
@@ -52,16 +52,13 @@
                             </p>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-sm opacity-90">Tenant ID: {{ tenant('id') }}</div>
-                    </div>
                 </div>
             </div>
         @endif
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8" wire:transition>
             <!-- Total Projects -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-transform duration-200 hover:scale-105">
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6 transition-transform duration-200 hover:scale-105">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-blue-500 bg-opacity-20">
                         <i class="fas fa-project-diagram text-blue-500 text-xl"></i>
@@ -74,7 +71,7 @@
             </div>
 
             <!-- Total Tasks -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-transform duration-200 hover:scale-105">
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6 transition-transform duration-200 hover:scale-105">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-green-500 bg-opacity-20">
                         <i class="fas fa-tasks text-green-500 text-xl"></i>
@@ -87,7 +84,7 @@
             </div>
 
             <!-- Pending Tasks -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-transform duration-200 hover:scale-105">
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6 transition-transform duration-200 hover:scale-105">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-yellow-500 bg-opacity-20">
                         <i class="fas fa-clock text-yellow-500 text-xl"></i>
@@ -100,7 +97,7 @@
             </div>
 
             <!-- In Progress Tasks -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-transform duration-200 hover:scale-105">
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6 transition-transform duration-200 hover:scale-105">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-indigo-500 bg-opacity-20">
                         <i class="fas fa-spinner text-indigo-500 text-xl"></i>
@@ -113,7 +110,7 @@
             </div>
 
             <!-- Completed Tasks -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-transform duration-200 hover:scale-105">
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6 transition-transform duration-200 hover:scale-105">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-green-500 bg-opacity-20">
                         <i class="fas fa-check-circle text-green-500 text-xl"></i>
@@ -126,7 +123,7 @@
             </div>
 
             <!-- Team Members -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-transform duration-200 hover:scale-105">
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6 transition-transform duration-200 hover:scale-105">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-purple-500 bg-opacity-20">
                         <i class="fas fa-users text-purple-500 text-xl"></i>

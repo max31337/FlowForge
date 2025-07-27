@@ -39,8 +39,8 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Tenant Details -->
         <div class="lg:col-span-2">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-700">
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Tenant Details</h2>
                 </div>
                 <div class="p-6">
@@ -93,8 +93,8 @@
             </div>
 
             <!-- Domains -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow mt-8">
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 mt-8">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Domains</h3>
                 </div>
                 <div class="p-6">

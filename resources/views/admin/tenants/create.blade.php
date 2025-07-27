@@ -11,8 +11,8 @@
     </div>
 
     <div class="max-w-2xl mx-auto">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Tenant Information</h2>
             </div>
 

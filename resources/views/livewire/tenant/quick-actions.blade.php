@@ -1,4 +1,4 @@
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+<div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6">
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h3>
         @if(tenancy()->initialized)
@@ -13,7 +13,7 @@
             @foreach($actions as $action)
                 <div class="group relative">
                     <a href="{{ $action['url'] }}" 
-                       class="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-{{ $action['color'] }}-300 dark:hover:border-{{ $action['color'] }}-600 transition-all duration-200 hover:shadow-md">
+                       class="block p-4 border border-gray-200 dark:border-zinc-700 rounded-lg hover:border-{{ $action['color'] }}-300 dark:hover:border-{{ $action['color'] }}-600 transition-all duration-200 hover:shadow-md">
                         <div class="flex items-start space-x-3">
                             <div class="flex-shrink-0">
                                 <div class="w-10 h-10 bg-{{ $action['color'] }}-100 dark:bg-{{ $action['color'] }}-900 rounded-lg flex items-center justify-center group-hover:bg-{{ $action['color'] }}-200 dark:group-hover:bg-{{ $action['color'] }}-800 transition-colors duration-200">

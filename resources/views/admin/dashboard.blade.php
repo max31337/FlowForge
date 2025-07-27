@@ -14,7 +14,7 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6">
             <div class="flex items-center">
                 <div class="p-3 rounded-full bg-blue-500 bg-opacity-20">
                     <i class="fas fa-building text-blue-500 text-xl"></i>
@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6">
             <div class="flex items-center">
                 <div class="p-3 rounded-full bg-green-500 bg-opacity-20">
                     <i class="fas fa-check-circle text-green-500 text-xl"></i>
@@ -38,7 +38,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6">
             <div class="flex items-center">
                 <div class="p-3 rounded-full bg-purple-500 bg-opacity-20">
                     <i class="fas fa-users text-purple-500 text-xl"></i>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800 p-6">
             <div class="flex items-center">
                 <div class="p-3 rounded-full bg-yellow-500 bg-opacity-20">
                     <i class="fas fa-chart-bar text-yellow-500 text-xl"></i>
@@ -67,8 +67,8 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Recent Tenants -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Tenants</h3>
             </div>
             <div class="p-6">
@@ -106,7 +106,7 @@
         </div>
 
         <!-- Plan Distribution -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Plan Distribution</h3>
             </div>

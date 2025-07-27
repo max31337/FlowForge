@@ -1,5 +1,5 @@
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+<div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800">
+    <div class="p-6 border-b border-gray-200 dark:border-zinc-700">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Tasks</h3>
             @if($this->tasks->count() > 0)
@@ -13,13 +13,13 @@
         </div>
         
         <!-- Status Filter Tabs -->
-        <div class="flex space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+        <div class="flex space-x-1 bg-gray-100 dark:bg-zinc-800 rounded-lg p-1">
             @foreach(['all' => 'All', 'pending' => 'Pending', 'in_progress' => 'In Progress', 'review' => 'Review', 'completed' => 'Completed'] as $status => $label)
                 <button 
                     wire:click="setFilterStatus('{{ $status }}')"
                     class="flex-1 text-xs font-medium py-2 px-3 rounded-md transition-colors duration-200
                         @if($filterStatus === $status) 
-                            bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm
+                            bg-white dark:bg-zinc-700 text-gray-900 dark:text-white shadow-sm
                         @else 
                             text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white
                         @endif"

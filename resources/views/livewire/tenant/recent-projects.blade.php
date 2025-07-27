@@ -1,5 +1,5 @@
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+<div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800">
+    <div class="p-6 border-b border-gray-200 dark:border-zinc-700">
         <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Projects</h3>
             @if($this->projects->count() > 0)
@@ -17,7 +17,7 @@
         @if($this->projects->count() > 0)
             <div class="space-y-4">
                 @foreach($this->projects as $project)
-                    <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                    <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-zinc-700 rounded-lg hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors duration-200">
                         <div class="flex-1">
                             <div class="flex items-center space-x-3">
                                 <h4 class="font-medium text-gray-900 dark:text-white">{{ $project->name }}</h4>
@@ -46,7 +46,7 @@
                                         </span>
                                         <span class="text-gray-600 dark:text-gray-400">{{ $project->progress }}%</span>
                                     </div>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                                    <div class="w-full bg-gray-200 dark:bg-zinc-700 rounded-full h-1.5">
                                         <div 
                                             class="h-1.5 rounded-full transition-all duration-500 ease-out
                                                 @if($project->progress >= 80) bg-green-500
