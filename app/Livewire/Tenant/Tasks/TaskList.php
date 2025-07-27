@@ -6,12 +6,12 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Category;
+use App\Livewire\TenantAwareComponent;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Computed;
 
-class TaskList extends Component
+class TaskList extends TenantAwareComponent
 {
     use WithPagination;
 
@@ -52,11 +52,11 @@ class TaskList extends Component
 
     protected function rules() 
     {
-        if (!tenancy()->initialized) {
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return [];
         }
-
-        $tenantId = tenant('id');
         
         return [
             'taskForm.title' => 'required|string|max:255',
@@ -283,15 +283,16 @@ class TaskList extends Component
     #[Computed]
     public function tasks()
     {
-        // Ensure tenant context
-        if (!tenancy()->initialized) {
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return new \Illuminate\Pagination\LengthAwarePaginator(
                 [], 0, $this->perPage, 1, ['path' => request()->url()]
             );
         }
 
         $query = Task::with(['project', 'category', 'assignedTo', 'createdBy'])
-            ->where('tenant_id', tenant('id'))
+            ->where('tenant_id', $tenantId)
             ->when($this->search, function($q) {
                 $q->where(function($subQ) {
                     $subQ->where('title', 'like', '%' . $this->search . '%')
@@ -321,12 +322,13 @@ class TaskList extends Component
     #[Computed]
     public function projects()
     {
-        // Ensure tenant context
-        if (!tenancy()->initialized) {
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return collect();
         }
 
-        return Project::where('tenant_id', tenant('id'))
+        return Project::where('tenant_id', $tenantId)
             ->active()
             ->orderBy('name')
             ->get();
@@ -335,12 +337,13 @@ class TaskList extends Component
     #[Computed]
     public function categories()
     {
-        // Ensure tenant context
-        if (!tenancy()->initialized) {
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return collect();
         }
 
-        return Category::where('tenant_id', tenant('id'))
+        return Category::where('tenant_id', $tenantId)
             ->orderBy('name')
             ->get();
     }
@@ -348,12 +351,13 @@ class TaskList extends Component
     #[Computed]
     public function users()
     {
-        // Ensure tenant context
-        if (!tenancy()->initialized) {
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return collect();
         }
 
-        return User::where('tenant_id', tenant('id'))
+        return User::where('tenant_id', $tenantId)
             ->orderBy('name')
             ->get();
     }
