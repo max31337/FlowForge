@@ -100,9 +100,25 @@ class TenancyServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootEvents();
-        $this->mapRoutes();
-
+        
         $this->makeTenancyMiddlewareHighestPriority();
+        
+        // Register tenant routes
+        $this->mapTenantRoutes();
+    }
+
+    /**
+     * Register tenant routes.
+     */
+    protected function mapTenantRoutes(): void
+    {
+        Route::middleware([
+            'web',
+            Middleware\InitializeTenancyByDomain::class,
+            Middleware\PreventAccessFromCentralDomains::class,
+            'ensure.tenant.user',
+        ])
+        ->group(base_path('routes/tenant.php'));
     }
 
     protected function bootEvents()
@@ -116,23 +132,7 @@ class TenancyServiceProvider extends ServiceProvider
                 Event::listen($event, $listener);
             }
         }
-    }
-
-    protected function mapRoutes()
-    {
-        $this->app->booted(function () {
-            if (file_exists(base_path('routes/tenant.php'))) {
-                // Only load tenant routes if we're NOT on a central domain
-                $centralDomains = config('tenancy.central_domains', ['127.0.0.1', 'localhost']);
-                $host = request()->getHost();
-                
-                if (!in_array($host, $centralDomains)) {
-                    Route::namespace(static::$controllerNamespace)
-                        ->group(base_path('routes/tenant.php'));
-                }
-            }
-        });
-    }
+    }    // Route loading is now handled above in the boot method
 
     protected function makeTenancyMiddlewareHighestPriority()
     {

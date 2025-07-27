@@ -3,10 +3,10 @@
 namespace App\Livewire\Tenant;
 
 use App\Models\Task;
-use Livewire\Component;
+use App\Livewire\TenantAwareComponent;
 use Livewire\Attributes\Computed;
 
-class RecentTasks extends Component
+class RecentTasks extends TenantAwareComponent
 {
     public int $limit = 5;
     public bool $showAll = false;
@@ -17,11 +17,13 @@ class RecentTasks extends Component
     #[Computed]
     public function tasks()
     {
-        if (!tenancy()->initialized) {
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return collect();
         }
 
-        $query = Task::where('tenant_id', tenant('id'))
+        $query = Task::where('tenant_id', $tenantId)
             ->with(['project:id,name', 'assignedTo:id,name'])
             ->orderBy('updated_at', 'desc');
 
@@ -39,7 +41,9 @@ class RecentTasks extends Component
     #[Computed]
     public function statusCounts()
     {
-        if (!tenancy()->initialized) {
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return [
                 'all' => 0,
                 'pending' => 0,
@@ -49,7 +53,7 @@ class RecentTasks extends Component
             ];
         }
 
-        $counts = Task::where('tenant_id', tenant('id'))
+        $counts = Task::where('tenant_id', $tenantId)
             ->selectRaw('status, COUNT(*) as count')
             ->groupBy('status')
             ->pluck('count', 'status')
@@ -78,7 +82,14 @@ class RecentTasks extends Component
 
     public function updateTaskStatus($taskId, $status)
     {
-        $task = Task::where('tenant_id', tenant('id'))->findOrFail($taskId);
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
+            $this->dispatch('error', 'Tenant context not available.');
+            return;
+        }
+        
+        $task = Task::where('tenant_id', $tenantId)->findOrFail($taskId);
         
         // Check permissions
         if (!auth()->user()->hasPermission('update_tasks')) {

@@ -2,14 +2,16 @@
 
 namespace App\Livewire\Tenant;
 
-use Livewire\Component;
+use App\Livewire\TenantAwareComponent;
 
-class QuickActions extends Component
+class QuickActions extends TenantAwareComponent
 {
     public function render()
     {
-        // Ensure tenant context is available
-        if (!tenancy()->initialized) {
+        // Use TenantAwareComponent method for safe tenant access
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return view('livewire.tenant.quick-actions', ['actions' => []]);
         }
         
@@ -22,9 +24,11 @@ class QuickActions extends Component
     {
         $user = auth()->user();
         $actions = [];
+        
+        $tenantId = $this->getTenantId();
 
         // Only show actions if user belongs to current tenant
-        if (!$user || $user->getAttribute('tenant_id') !== tenant('id')) {
+        if (!$user || !$tenantId || $user->getAttribute('tenant_id') !== $tenantId) {
             return [];
         }
 

@@ -5,10 +5,10 @@ namespace App\Livewire\Tenant;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
-use Livewire\Component;
+use App\Livewire\TenantAwareComponent;
 use Livewire\Attributes\Computed;
 
-class DashboardStats extends Component
+class DashboardStats extends TenantAwareComponent
 {
     public bool $loading = true;
 
@@ -21,7 +21,9 @@ class DashboardStats extends Component
     #[Computed]
     public function stats()
     {
-        if (!tenancy()->initialized) {
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return [
                 'total_projects' => 0,
                 'total_tasks' => 0,
@@ -33,13 +35,11 @@ class DashboardStats extends Component
                 'debug_info' => 'No tenant context',
             ];
         }
-
-        $tenantId = tenant('id');
         
         // Debug logging
         logger()->info('DashboardStats: Loading stats for tenant', [
             'tenant_id' => $tenantId,
-            'tenant_name' => tenancy()->tenant->name ?? 'Unknown'
+            'tenant_name' => $this->safeTenant('name') ?? 'Unknown'
         ]);
         
         $totalTasks = Task::where('tenant_id', $tenantId)->count();

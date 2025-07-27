@@ -3,10 +3,10 @@
 namespace App\Livewire\Tenant;
 
 use App\Models\Project;
-use Livewire\Component;
+use App\Livewire\TenantAwareComponent;
 use Livewire\Attributes\Computed;
 
-class RecentProjects extends Component
+class RecentProjects extends TenantAwareComponent
 {
     public int $limit = 5;
     public bool $showAll = false;
@@ -14,11 +14,13 @@ class RecentProjects extends Component
     #[Computed]
     public function projects()
     {
-        if (!tenancy()->initialized) {
+        $tenantId = $this->getTenantId();
+        
+        if (!$tenantId) {
             return collect();
         }
 
-        $query = Project::where('tenant_id', tenant('id'))
+        $query = Project::where('tenant_id', $tenantId)
             ->with(['tasks' => function($query) {
                 $query->select('project_id', 'status');
             }])

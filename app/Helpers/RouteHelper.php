@@ -8,7 +8,12 @@ if (!function_exists('dashboard_route')) {
     {
         // Check if we're in a tenant context (tenant domain)
         if (tenancy()->initialized) {
-            return route('tenant.dashboard');
+            try {
+                return route('tenant.dashboard');
+            } catch (\Exception $e) {
+                // If tenant.dashboard route doesn't exist, return a fallback URL
+                return '/dashboard';
+            }
         }
         
         // Check if user is a central admin
@@ -39,7 +44,12 @@ if (!function_exists('dashboard_route')) {
         }
         
         // On tenant domain - use tenant dashboard
-        return route('tenant.dashboard');
+        try {
+            return route('tenant.dashboard');
+        } catch (\Exception $e) {
+            // If tenant.dashboard route doesn't exist, return a fallback URL
+            return '/dashboard';
+        }
     }
 }
 
