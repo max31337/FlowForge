@@ -10,12 +10,25 @@
 
     <!-- Modal -->
     @if($showModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 z-50 overflow-y-auto" 
+             aria-labelledby="modal-title" 
+             role="dialog" 
+             aria-modal="true"
+             x-data="{ show: @entangle('showModal') }"
+             x-show="show"
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" wire:click="closeModal"></div>
+                <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" 
+                     wire:click="closeModal"
+                     x-on:click="show = false"></div>
                 
                 <div class="inline-block align-bottom bg-zinc-800 rounded-lg border border-zinc-700 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <form wire:submit="createTask">
+                    <form wire:submit.prevent="createTask" x-on:submit.prevent="$wire.createTask().then(() => { show = false; })">
                         <div class="bg-zinc-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <h3 class="text-lg font-medium text-white mb-4">Create New Task</h3>
                             
@@ -128,12 +141,23 @@
                         <div class="px-4 py-3 bg-zinc-700 text-right sm:px-6">
                             <button type="button" 
                                     wire:click="closeModal"
-                                    class="inline-flex justify-center rounded-md border border-zinc-600 bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-800 mr-3">
+                                    x-on:click="show = false"
+                                    wire:loading.attr="disabled"
+                                    class="inline-flex justify-center rounded-md border border-zinc-600 bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-800 mr-3 disabled:opacity-50 disabled:cursor-not-allowed">
                                 Cancel
                             </button>
                             <button type="submit" 
-                                    class="inline-flex justify-center rounded-md border border-transparent bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-800">
-                                Create Task
+                                    wire:loading.attr="disabled"
+                                    wire:target="createTask"
+                                    class="inline-flex justify-center rounded-md border border-transparent bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span wire:loading.remove wire:target="createTask">Create Task</span>
+                                <span wire:loading wire:target="createTask" class="flex items-center">
+                                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Creating...
+                                </span>
                             </button>
                         </div>
                     </form>

@@ -27,6 +27,11 @@ class CreateTaskForm extends TenantAwareComponent
 
     public $showModal = false;
 
+    protected $listeners = [
+        'open-task-modal' => 'openModal',
+        'close-task-modal' => 'closeModal',
+    ];
+
     protected function rules() 
     {
         $tenantId = $this->getTenantId();
@@ -59,6 +64,12 @@ class CreateTaskForm extends TenantAwareComponent
         $this->showModal = false;
         $this->resetTaskForm();
         $this->resetValidation();
+        
+        // Clear any error messages
+        session()->forget(['message', 'error']);
+        
+        // Force refresh the component state
+        $this->dispatch('$refresh');
     }
 
     public function createTask()
@@ -94,12 +105,19 @@ class CreateTaskForm extends TenantAwareComponent
 
             Task::create($data);
 
-            $this->closeModal();
-            $this->dispatch('task-created');
+            // Flash success message first
             session()->flash('message', 'Task created successfully!');
+            
+            // Close modal and reset form
+            $this->closeModal();
+            
+            // Dispatch events for other components to update
+            $this->dispatch('task-created');
+            $this->dispatch('refresh-task-list');
+            
         } catch (\Exception $e) {
             session()->flash('error', 'Unable to create task: ' . $e->getMessage());
-            $this->closeModal();
+            // Don't close modal on error, let user try again
         }
     }
 

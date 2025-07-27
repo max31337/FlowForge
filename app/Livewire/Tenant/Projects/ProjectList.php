@@ -36,6 +36,11 @@ class ProjectList extends TenantAwareComponent
         'category_id' => null,
     ];
 
+    protected $listeners = [
+        'open-project-modal' => 'openCreateModal',
+        'close-project-modal' => 'closeCreateModal',
+    ];
+
     protected $queryString = [
         'search' => ['except' => ''],
         'statusFilter' => ['except' => ''],
@@ -114,43 +119,12 @@ class ProjectList extends TenantAwareComponent
         $this->showCreateModal = false;
         $this->resetProjectForm();
         $this->resetValidation();
-    }    public function openEditModal($projectId)
-    {
-        try {
-            // Try to get tenant_id - use fallback if needed
-            $tenantId = null;
-            if (tenancy()->initialized && tenant('id')) {
-                $tenantId = tenant('id');
-            } else {
-                $host = request()->getHost();
-                $tenant = \App\Models\Tenant::whereHas('domains', function($query) use ($host) {
-                    $query->where('domain', $host);
-                })->first();
-                if ($tenant) {
-                    $tenantId = $tenant->id;
-                }
-            }
-            
-            if (!$tenantId) {
-                throw new \Exception('Unable to determine tenant context');
-            }
-            
-            $this->editingProject = Project::where('tenant_id', $tenantId)->findOrFail($projectId);
-            
-            $this->projectForm = [
-                'name' => $this->editingProject->name ?? '',
-                'description' => $this->editingProject->description ?? '',
-                'status' => $this->editingProject->status ?? 'planning',
-                'priority' => $this->editingProject->priority ?? 'medium',
-                'start_date' => $this->editingProject->start_date ?? null,
-                'due_date' => $this->editingProject->due_date ?? null,
-                'budget' => $this->editingProject->budget ?? null,
-                'category_id' => $this->editingProject->category_id ?? null,
-            ];
-            $this->showEditModal = true;
-        } catch (\Exception $e) {
-            session()->flash('error', 'Unable to load project: ' . $e->getMessage());
-        }
+        
+        // Clear any error messages
+        session()->forget(['error']);
+        
+        // Dispatch event to close modal via JavaScript
+        $this->dispatch('close-modal');
     }
 
     public function closeEditModal()
@@ -159,11 +133,18 @@ class ProjectList extends TenantAwareComponent
         $this->editingProject = null;
         $this->resetProjectForm();
         $this->resetValidation();
+        
+        // Clear any error messages
+        session()->forget(['error']);
+        
+        // Force refresh the component state
+        $this->dispatch('$refresh');
     }
 
     public function createProject()
     {
         try {
+            // Validate the form
             $this->validate();
 
             $data = $this->projectForm;
@@ -193,11 +174,22 @@ class ProjectList extends TenantAwareComponent
 
             Project::create($data);
 
-            $this->closeCreateModal();
-            $this->dispatch('project-created');
+            // Flash success message first
             session()->flash('message', 'Project created successfully!');
+            
+            // Close modal and reset form
+            $this->closeCreateModal();
+            
+            // Dispatch events for other components to update
+            $this->dispatch('project-created');
+            $this->dispatch('refresh-project-list');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Re-throw validation exceptions to show in UI
+            throw $e;
         } catch (\Exception $e) {
             session()->flash('error', 'Unable to create project: ' . $e->getMessage());
+            // Don't close modal on error, let user try again
         }
     }
 
@@ -221,11 +213,19 @@ class ProjectList extends TenantAwareComponent
 
             $this->editingProject->update($data);
 
-            $this->closeEditModal();
-            $this->dispatch('project-updated');
+            // Flash success message first
             session()->flash('message', 'Project updated successfully!');
+            
+            // Close modal and reset form
+            $this->closeEditModal();
+            
+            // Dispatch events for other components to update
+            $this->dispatch('project-updated');
+            $this->dispatch('refresh-project-list');
+            
         } catch (\Exception $e) {
             session()->flash('error', 'Unable to update project: ' . $e->getMessage());
+            // Don't close modal on error, let user try again
         }
     }
 

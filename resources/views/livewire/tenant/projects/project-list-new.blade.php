@@ -1,8 +1,7 @@
-<div>
-    <x-pines-layout title="Projects" subtitle="Manage and organize your projects">
-        
-        <!-- Header Actions -->
-        <x-pines-card class="mb-8">
+<x-pines-layout title="Projects" subtitle="Manage and organize your projects">
+    
+    <!-- Header Actions -->
+    <x-pines-card class="mb-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div class="flex items-center gap-3">
                 @can('create_projects')
@@ -221,22 +220,22 @@
 
                             <div class="space-y-4">
                                 <x-pines-input 
-                                    wire:model="projectForm.name"
+                                    wire:model="form.name"
                                     label="Project Name"
                                     required
-                                    :error="$errors->first('projectForm.name')"
+                                    :error="$errors->first('form.name')"
                                     placeholder="Enter project name" />
 
                                 <x-pines-textarea 
-                                    wire:model="projectForm.description"
+                                    wire:model="form.description"
                                     label="Description"
-                                    :error="$errors->first('projectForm.description')"
+                                    :error="$errors->first('form.description')"
                                     placeholder="Enter project description" />
 
                                 <x-pines-select 
-                                    wire:model="projectForm.category_id"
+                                    wire:model="form.category_id"
                                     label="Category"
-                                    :error="$errors->first('projectForm.category_id')"
+                                    :error="$errors->first('form.category_id')"
                                     placeholder="Select a category">
                                     @foreach($this->categories as $category)
                                         <option value="{{ $category->id }}" class="bg-black text-white">{{ $category->name }}</option>
@@ -244,9 +243,9 @@
                                 </x-pines-select>
 
                                 <x-pines-select 
-                                    wire:model="projectForm.status"
+                                    wire:model="form.status"
                                     label="Status"
-                                    :error="$errors->first('projectForm.status')"
+                                    :error="$errors->first('form.status')"
                                     placeholder="Select status">
                                     <option value="active" class="bg-black text-white">Active</option>
                                     <option value="on_hold" class="bg-black text-white">On Hold</option>
@@ -319,22 +318,22 @@
 
                             <div class="space-y-4">
                                 <x-pines-input 
-                                    wire:model="projectForm.name"
+                                    wire:model="editForm.name"
                                     label="Project Name"
                                     required
-                                    :error="$errors->first('projectForm.name')"
+                                    :error="$errors->first('editForm.name')"
                                     placeholder="Enter project name" />
 
                                 <x-pines-textarea 
-                                    wire:model="projectForm.description"
+                                    wire:model="editForm.description"
                                     label="Description"
-                                    :error="$errors->first('projectForm.description')"
+                                    :error="$errors->first('editForm.description')"
                                     placeholder="Enter project description" />
 
                                 <x-pines-select 
-                                    wire:model="projectForm.category_id"
+                                    wire:model="editForm.category_id"
                                     label="Category"
-                                    :error="$errors->first('projectForm.category_id')"
+                                    :error="$errors->first('editForm.category_id')"
                                     placeholder="Select a category">
                                     @foreach($this->categories as $category)
                                         <option value="{{ $category->id }}" class="bg-black text-white">{{ $category->name }}</option>
@@ -342,9 +341,9 @@
                                 </x-pines-select>
 
                                 <x-pines-select 
-                                    wire:model="projectForm.status"
+                                    wire:model="editForm.status"
                                     label="Status"
-                                    :error="$errors->first('projectForm.status')"
+                                    :error="$errors->first('editForm.status')"
                                     placeholder="Select status">
                                     <option value="active" class="bg-black text-white">Active</option>
                                     <option value="on_hold" class="bg-black text-white">On Hold</option>
@@ -379,16 +378,17 @@
             type="success" 
             title="Success!" 
             message="{{ session('message') }}" />
-    @endif        @if (session()->has('error'))
-            <x-pines-toast 
-                type="error" 
-                title="Error!" 
-                message="{{ session('error') }}" />
-        @endif
-    </x-pines-layout>
-</div>
+    @endif
 
-@push('styles')
+    @if (session()->has('error'))
+        <x-pines-toast 
+            type="error" 
+            title="Error!" 
+            message="{{ session('error') }}" />
+    @endif
+</x-pines-layout>
+
+<!-- Custom Styles -->
 <style>
 .line-clamp-3 {
     display: -webkit-box;
@@ -397,9 +397,8 @@
     overflow: hidden;
 }
 </style>
-@endpush
 
-@push('scripts')
+<!-- JavaScript for Enhanced Interactions -->
 <script>
 document.addEventListener('livewire:init', () => {
     Livewire.on('project-created', (event) => {
@@ -416,15 +415,7 @@ document.addEventListener('livewire:init', () => {
 });
 
 function showToast(type, title, message) {
-    // Create toast container if it doesn't exist
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.className = 'fixed top-4 right-4 z-50 flex flex-col space-y-4 pointer-events-none';
-        document.body.appendChild(container);
-    }
-    
+    const container = document.getElementById('toast-container');
     const toastHtml = `
         <div x-data="{ show: true }" 
              x-show="show" 
@@ -469,4 +460,3 @@ function showToast(type, title, message) {
     container.appendChild(toastElement.firstElementChild);
 }
 </script>
-@endpush

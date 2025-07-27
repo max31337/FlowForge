@@ -126,6 +126,12 @@ class TaskList extends TenantAwareComponent
         $this->showCreateModal = false;
         $this->resetTaskForm();
         $this->resetValidation();
+        
+        // Clear any error messages
+        session()->forget(['error']);
+        
+        // Dispatch event to close modal via JavaScript
+        $this->dispatch('close-modal');
     }
 
     public function openEditModal($taskId)
@@ -159,11 +165,18 @@ class TaskList extends TenantAwareComponent
         $this->editingTask = null;
         $this->resetTaskForm();
         $this->resetValidation();
+        
+        // Clear any error messages
+        session()->forget(['error']);
+        
+        // Force refresh the component state
+        $this->dispatch('$refresh');
     }
 
     public function createTask()
     {
         try {
+            // Validate the form
             $this->validate();
 
             $data = $this->taskForm;
@@ -193,37 +206,57 @@ class TaskList extends TenantAwareComponent
 
             Task::create($data);
 
-            $this->closeCreateModal();
-            $this->dispatch('task-created');
+            // Flash success message first
             session()->flash('message', 'Task created successfully!');
+            
+            // Close modal and reset form
+            $this->closeCreateModal();
+            
+            // Dispatch events for other components to update
+            $this->dispatch('task-created');
+            $this->dispatch('refresh-task-list');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Re-throw validation exceptions to show in UI
+            throw $e;
         } catch (\Exception $e) {
             session()->flash('error', 'Unable to create task: ' . $e->getMessage());
-            $this->closeCreateModal();
+            // Don't close modal on error, let user try again
         }
     }
 
     public function updateTask()
     {
-        // Ensure tenant context
-        if (!tenancy()->initialized || !$this->editingTask) {
-            session()->flash('error', 'Tenant context not available or task not found.');
-            return;
+        try {
+            if (!tenancy()->initialized || !$this->editingTask) {
+                throw new \Exception('Tenant context not available or task not found.');
+            }
+
+            $this->validate();
+
+            $data = $this->taskForm;
+            
+            // Remove empty values
+            $data = array_filter($data, function($value) {
+                return $value !== null && $value !== '';
+            });
+
+            $this->editingTask->update($data);
+
+            // Flash success message first
+            session()->flash('message', 'Task updated successfully!');
+            
+            // Close modal and reset form
+            $this->closeEditModal();
+            
+            // Dispatch events for other components to update
+            $this->dispatch('task-updated');
+            $this->dispatch('refresh-task-list');
+            
+        } catch (\Exception $e) {
+            session()->flash('error', 'Unable to update task: ' . $e->getMessage());
+            // Don't close modal on error, let user try again
         }
-
-        $this->validate();
-
-        $data = $this->taskForm;
-        
-        // Remove empty values
-        $data = array_filter($data, function($value) {
-            return $value !== null && $value !== '';
-        });
-
-        $this->editingTask->update($data);
-
-        $this->closeEditModal();
-        $this->dispatch('task-updated');
-        session()->flash('message', 'Task updated successfully!');
     }
 
     public function deleteTask($taskId)
