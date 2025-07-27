@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\UserManagementController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,12 +13,12 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Here you can register the tenant routes for your application.
-| These routes are loaded by the TenantRouteServiceProvider and all of them
+| These routes are loaded by the TenancyServiceProvider and all of them
 | will be assigned to the "web" middleware group and tenant-specific middleware.
 |
 */
 
-// Debug route to test tenancy initialization
+// Debug route to test tenancy initialization (remove in production)
 Route::get('/debug-tenancy', function () {
     $tenancyInitialized = tenancy()->initialized;
     $tenant = $tenancyInitialized ? tenancy()->tenant : null;
@@ -46,9 +47,14 @@ Route::get('/', function () {
 require __DIR__.'/auth.php';
 
 // Authenticated tenant routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'ensure.tenant.user'])->group(function () {
     // Tenant Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('tenant.dashboard');
+    
+    // Profile routes for tenant users
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
     // User management routes (requires manage_users permission)
     Route::middleware('permission:manage_users')->group(function () {
@@ -78,5 +84,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin-only routes (requires owner or admin role)
     Route::middleware('role:owner,admin')->group(function () {
         // Tenant settings, billing, etc.
+        // Add more admin-specific routes here
     });
 });

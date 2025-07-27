@@ -9,10 +9,25 @@ if (!function_exists('dashboard_route')) {
         // Check if we're in a tenant context (tenant domain)
         if (tenancy()->initialized) {
             try {
-                return route('tenant.dashboard');
+                // For development with port 8000, ensure the port is included
+                $route = route('tenant.dashboard');
+                
+                // If we're running on localhost with port 8000, ensure port is in URL
+                if (strpos(request()->getHost(), 'localhost') !== false && 
+                    strpos($route, ':8000') === false && 
+                    config('app.env') === 'local') {
+                    $route = str_replace('localhost/', 'localhost:8000/', $route);
+                }
+                
+                return $route;
             } catch (\Exception $e) {
                 // If tenant.dashboard route doesn't exist, return a fallback URL
-                return '/dashboard';
+                $host = request()->getHost();
+                $port = request()->getPort();
+                if ($port && $port != 80 && $port != 443) {
+                    return "http://{$host}:{$port}/dashboard";
+                }
+                return "http://{$host}/dashboard";
             }
         }
         
@@ -45,10 +60,25 @@ if (!function_exists('dashboard_route')) {
         
         // On tenant domain - use tenant dashboard
         try {
-            return route('tenant.dashboard');
+            // For development with port 8000, ensure the port is included
+            $route = route('tenant.dashboard');
+            
+            // If we're running on localhost with port 8000, ensure port is in URL
+            if (strpos(request()->getHost(), 'localhost') !== false && 
+                strpos($route, ':8000') === false && 
+                config('app.env') === 'local') {
+                $route = str_replace('localhost/', 'localhost:8000/', $route);
+            }
+            
+            return $route;
         } catch (\Exception $e) {
             // If tenant.dashboard route doesn't exist, return a fallback URL
-            return '/dashboard';
+            $host = request()->getHost();
+            $port = request()->getPort();
+            if ($port && $port != 80 && $port != 443) {
+                return "http://{$host}:{$port}/dashboard";
+            }
+            return "http://{$host}/dashboard";
         }
     }
 }

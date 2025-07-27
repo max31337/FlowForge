@@ -112,13 +112,40 @@ class TenancyServiceProvider extends ServiceProvider
      */
     protected function mapTenantRoutes(): void
     {
+        // Get domain information
+        $centralDomains = config('tenancy.central_domains', ['127.0.0.1', 'localhost']);
+        $host = request()->getHost();
+        $isOnCentralDomain = in_array($host, $centralDomains);
+        
+        // Debug logging to understand what's happening
+        \Log::info('TenancyServiceProvider: Route registration check', [
+            'host' => $host,
+            'central_domains' => $centralDomains,
+            'is_central_domain' => $isOnCentralDomain,
+            'request_uri' => request()->getRequestUri(),
+        ]);
+        
+        // Only register tenant routes if we're NOT on a central domain
+        // AND if we're in a web request context (not CLI)
+        if ($isOnCentralDomain || app()->runningInConsole()) {
+            \Log::info('TenancyServiceProvider: Skipping tenant routes', [
+                'is_central_domain' => $isOnCentralDomain,
+                'running_in_console' => app()->runningInConsole()
+            ]);
+            return; // Don't register tenant routes
+        }
+        
+        \Log::info('TenancyServiceProvider: Registering tenant routes for domain', ['host' => $host]);
+        
+        // Register tenant routes with proper middleware stack
         Route::middleware([
             'web',
             Middleware\InitializeTenancyByDomain::class,
             Middleware\PreventAccessFromCentralDomains::class,
-            'ensure.tenant.user',
         ])
         ->group(base_path('routes/tenant.php'));
+        
+        \Log::info('TenancyServiceProvider: Tenant routes registered successfully');
     }
 
     protected function bootEvents()

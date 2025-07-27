@@ -1,86 +1,53 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\TenantController;
-use App\Http\Controllers\ProfileController;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Central Application Routes
+| Main Route Orchestrator
 |--------------------------------------------------------------------------
 |
-| These routes are for the central application (main domain).
-| Tenant-specific routes are handled in routes/tenant.php.
+| This file orchestrates between central and tenant routes based on
+| the domain being accessed. It ensures clean separation between
+| central admin functionality and tenant-specific routes.
+|
+| ARCHITECTURE:
+| - Central domains (localhost, 127.0.0.1): Load central.php routes only
+| - Tenant domains (*.localhost): Tenant routes loaded by TenancyServiceProvider
 |
 */
 
-// Central welcome route
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+// Get domain information
+$centralDomains = config('tenancy.central_domains', ['127.0.0.1', 'localhost']);
+$host = request()->getHost();
+$isOnCentralDomain = in_array($host, $centralDomains);
 
-// Central admin routes - protected from tenant domains
-Route::middleware([
-    'web',
-    'prevent.tenant.access',
-    'auth',
-    'verified',
-    'role:central_admin'
+if ($isOnCentralDomain) {
+    /*
+    |--------------------------------------------------------------------------
+    | Central Domain Routes
+    |--------------------------------------------------------------------------
+    | Only load central admin routes when accessing central domains.
+    | This ensures tenant routes are never loaded on central domains.
+    */
+    require __DIR__.'/central.php';
     
-])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+} else {
+    /*
+    |--------------------------------------------------------------------------
+    | Tenant Domain Routes  
+    |--------------------------------------------------------------------------
+    | For tenant domains, routes are handled by TenancyServiceProvider.
+    | We only add fallback handling here for invalid tenant domains.
+    */
     
-    // Tenant management
-    Route::resource('tenants', TenantController::class);
-    Route::patch('tenants/{tenant}/toggle-status', [TenantController::class, 'toggleStatus'])
-        ->name('tenants.toggle-status');
-});
-
-// Dashboard route - handles both central and tenant domain redirects
-Route::middleware(['auth'])->get('/dashboard', function () {
-    $user = auth()->user();
-    
-    // Get host information to determine routing
-    $centralDomains = config('tenancy.central_domains', ['127.0.0.1', 'localhost']);
-    $host = request()->getHost();
-    $isOnCentralDomain = in_array($host, $centralDomains);
-    
-    // If user is central admin, always redirect to admin dashboard
-    if ($user->hasRole('central_admin')) {
-        return redirect()->route('admin.dashboard');
-    }
-    
-    // If we're on a tenant domain, redirect to tenant dashboard
-    if (!$isOnCentralDomain && tenancy()->initialized) {
-        // Verify user belongs to this tenant
-        if ($user->getAttribute('tenant_id') === tenant('id')) {
-            return redirect()->route('tenant.dashboard');
-        } else {
-            // User doesn't belong to this tenant - logout and redirect to login
-            auth()->logout();
-            return redirect()->route('login')->with('error', 'Access denied for this organization.');
+    // Fallback for invalid tenant domains
+    Route::fallback(function () {
+        if (!tenancy()->initialized) {
+            return redirect('/')->with('error', 'Organization not found. Please check the domain.');
         }
-    }
-    
-    // If tenant user is on central domain, redirect to their tenant domain
-    if ($isOnCentralDomain && $user->getAttribute('tenant_id')) {
-        $tenant = \App\Models\Tenant::find($user->getAttribute('tenant_id'));
-        if ($tenant && $tenant->domains->first()) {
-            $domainName = $tenant->domains->first()->getAttribute('domain');
-            return redirect("http://{$domainName}:8000/dashboard");
-        }
-    }
-    
-    // Default fallback - show generic dashboard
-    return view('dashboard');
-})->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-// Central authentication routes
-require __DIR__.'/auth.php';
+        abort(404);
+    });
+}
