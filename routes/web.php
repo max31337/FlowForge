@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Central welcome route
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 // Central admin routes - protected from tenant domains
 Route::middleware([

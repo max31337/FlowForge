@@ -26,9 +26,11 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
     'ensure.tenant.user',
 ])->group(function () {
+    // Only register tenant routes if we're actually on a tenant domain
+    // and tenancy is properly initialized
     Route::get('/', function () {
         return view('tenant.welcome');
-    });
+    })->name('tenant.welcome');
     
     // Tenant authentication routes (register, login, etc.)
     require __DIR__.'/auth.php';

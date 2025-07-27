@@ -122,8 +122,14 @@ class TenancyServiceProvider extends ServiceProvider
     {
         $this->app->booted(function () {
             if (file_exists(base_path('routes/tenant.php'))) {
-                Route::namespace(static::$controllerNamespace)
-                    ->group(base_path('routes/tenant.php'));
+                // Only load tenant routes if we're NOT on a central domain
+                $centralDomains = config('tenancy.central_domains', ['127.0.0.1', 'localhost']);
+                $host = request()->getHost();
+                
+                if (!in_array($host, $centralDomains)) {
+                    Route::namespace(static::$controllerNamespace)
+                        ->group(base_path('routes/tenant.php'));
+                }
             }
         });
     }
