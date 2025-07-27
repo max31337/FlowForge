@@ -93,7 +93,7 @@ class SocialiteController extends Controller
             
             Auth::login($existingUser);
             \Log::info('User logged in', ['user_id' => $existingUser->id]);
-            return redirect()->intended('dashboard');
+            return redirect()->intended(dashboard_route());
         }
 
         // Create new user
