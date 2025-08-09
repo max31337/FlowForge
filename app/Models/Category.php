@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+use App\Models\Concerns\MultiContext;
 
 class Category extends Model
 {
-    use HasFactory, HasUuids, BelongsToTenant;
+    use HasFactory, HasUuids, MultiContext;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +20,8 @@ class Category extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'tenant_id',
+        'user_id',
         'name',
         'slug',
         'description',

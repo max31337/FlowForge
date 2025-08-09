@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+use App\Models\Concerns\MultiContext;
 
 class Project extends Model
 {
-    use HasFactory, HasUuids, BelongsToTenant;
+    use HasFactory, HasUuids, MultiContext;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +20,8 @@ class Project extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'tenant_id',
+        'user_id',
         'name',
         'slug',
         'description',
@@ -67,6 +69,7 @@ class Project extends Model
     /**
      * Get the tenant that owns the project.
      */
+    // tenant() relation optional in personal mode; keep for compatibility
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
