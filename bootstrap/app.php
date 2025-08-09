@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,7 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'ensure.tenant.user' => \App\Http\Middleware\EnsureTenantUser::class,
+            'prevent.tenant.access' => \App\Http\Middleware\PreventTenantAccess::class,
+            'permission' => \App\Http\Middleware\CheckPermission::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
+            'debug.tenant' => \App\Http\Middleware\DebugTenantRequest::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

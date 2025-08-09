@@ -12,6 +12,7 @@ class AppLayout extends Component
      */
     public function render(): View
     {
-        return view('layouts.app');
+    // Use the new Salence-style sidebar layout for all <x-app-layout> usages
+    return view('layouts.sidebar-app');
     }
 }

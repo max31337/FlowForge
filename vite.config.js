@@ -8,4 +8,10 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        host: true, // Allow external connections
+        hmr: {
+            host: 'localhost', // HMR host
+        },
+    },
 });

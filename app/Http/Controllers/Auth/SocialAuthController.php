@@ -79,7 +79,7 @@ class SocialAuthController extends Controller
 
             Auth::login($user, true);
 
-            return redirect()->intended('/dashboard');
+            return redirect()->intended(dashboard_route());
             
         } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'Authentication failed. Please try again.');

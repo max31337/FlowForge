@@ -1,20 +1,53 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/*
+|--------------------------------------------------------------------------
+| Main Route Orchestrator
+|--------------------------------------------------------------------------
+|
+| This file orchestrates between central and tenant routes based on
+| the domain being accessed. It ensures clean separation between
+| central admin functionality and tenant-specific routes.
+|
+| ARCHITECTURE:
+| - Central domains (localhost, 127.0.0.1): Load central.php routes only
+| - Tenant domains (*.localhost): Tenant routes loaded by TenancyServiceProvider
+|
+*/
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Get domain information
+$centralDomains = config('tenancy.central_domains', ['127.0.0.1', 'localhost']);
+$host = request()->getHost();
+$isOnCentralDomain = in_array($host, $centralDomains);
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-require __DIR__.'/auth.php';
+if ($isOnCentralDomain) {
+    /*
+    |--------------------------------------------------------------------------
+    | Central Domain Routes
+    |--------------------------------------------------------------------------
+    | Only load central admin routes when accessing central domains.
+    | This ensures tenant routes are never loaded on central domains.
+    */
+    require __DIR__.'/central.php';
+    
+} else {
+    /*
+    |--------------------------------------------------------------------------
+    | Tenant Domain Routes  
+    |--------------------------------------------------------------------------
+    | For tenant domains, routes are handled by TenancyServiceProvider.
+    | We only add fallback handling here for invalid tenant domains.
+    */
+    
+    // Fallback for invalid tenant domains
+    Route::fallback(function () {
+        if (!tenancy()->initialized) {
+            return redirect('/')->with('error', 'Organization not found. Please check the domain.');
+        }
+        abort(404);
+    });
+}

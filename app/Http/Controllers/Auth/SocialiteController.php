@@ -66,6 +66,22 @@ class SocialiteController extends Controller
         if ($existingUser) {
             \Log::info('Existing user found', ['user_id' => $existingUser->id]);
             
+            // Check if we're in tenant context and user belongs to current tenant
+            if (tenancy()->initialized) {
+                $currentTenantId = tenant('id');
+                
+                if ($existingUser->tenant_id !== $currentTenantId) {
+                    \Log::warning('User attempted to login from wrong tenant', [
+                        'user_id' => $existingUser->id,
+                        'user_tenant_id' => $existingUser->tenant_id,
+                        'current_tenant_id' => $currentTenantId
+                    ]);
+                    
+                    return redirect()->route('login')
+                        ->with('error', 'You do not have access to this organization.');
+                }
+            }
+            
             // Update OAuth info if user exists but doesn't have provider info
             if (!$existingUser->provider) {
                 $existingUser->update([
@@ -77,14 +93,14 @@ class SocialiteController extends Controller
             
             Auth::login($existingUser);
             \Log::info('User logged in', ['user_id' => $existingUser->id]);
-            return redirect()->intended('dashboard');
+            return redirect()->intended(dashboard_route());
         }
 
         // Create new user
         try {
             \Log::info('Creating new user');
             
-            $user = User::create([
+            $userData = [
                 'name' => $socialUser->getName() ?: $socialUser->getNickname(),
                 'email' => $socialUser->getEmail(),
                 'provider' => $provider,
@@ -92,7 +108,15 @@ class SocialiteController extends Controller
                 'avatar' => $socialUser->getAvatar(),
                 'password' => Hash::make(Str::random(24)), // Random password since they use OAuth
                 'email_verified_at' => now(), // Auto-verify OAuth users
-            ]);
+            ];
+            
+            // If we're in tenant context, assign tenant_id
+            if (tenancy()->initialized) {
+                $userData['tenant_id'] = tenant('id');
+                \Log::info('Assigning user to tenant', ['tenant_id' => tenant('id')]);
+            }
+            
+            $user = User::create($userData);
 
             \Log::info('New user created', ['user_id' => $user->id]);
 
