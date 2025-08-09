@@ -41,7 +41,31 @@ class CategoryFactory extends Factory
             'description' => $category['description'],
             'color' => $category['color'],
             'is_active' => $this->faker->boolean(90), // 90% chance of being active
+            'tenant_id' => null,
+            'user_id' => null,
         ];
+    }
+
+    /**
+     * Personal mode category.
+     */
+    public function forUser(string $userId): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'user_id' => $userId,
+            'tenant_id' => null,
+        ]);
+    }
+
+    /**
+     * Tenant mode category.
+     */
+    public function forTenant(string $tenantId): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'tenant_id' => $tenantId,
+            'user_id' => null,
+        ]);
     }
 
     /**

@@ -64,7 +64,31 @@ class TaskFactory extends Factory
             'created_at' => $createdAt,
             'updated_at' => $this->faker->dateTimeBetween($createdAt, 'now'),
             // Note: created_by must be provided when creating tasks
+            'tenant_id' => null,
+            'user_id' => null,
         ];
+    }
+
+    /**
+     * Personal mode task for a user.
+     */
+    public function forUser(string $userId): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'user_id' => $userId,
+            'tenant_id' => null,
+        ]);
+    }
+
+    /**
+     * Tenant mode task.
+     */
+    public function forTenant(string $tenantId): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'tenant_id' => $tenantId,
+            'user_id' => null,
+        ]);
     }
 
     /**

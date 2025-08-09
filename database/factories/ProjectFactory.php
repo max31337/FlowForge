@@ -31,7 +31,32 @@ class ProjectFactory extends Factory
             'due_date' => $dueDate,
             'budget' => $this->faker->optional(0.6)->randomFloat(2, 1000, 100000),
             'is_active' => $this->faker->boolean(90),
+            // Hybrid context: either tenant_id OR user_id gets set externally or via states
+            'tenant_id' => null,
+            'user_id' => null,
         ];
+    }
+
+    /**
+     * Personal mode project for a specific user.
+     */
+    public function forUser(string $userId): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'user_id' => $userId,
+            'tenant_id' => null,
+        ]);
+    }
+
+    /**
+     * Tenant mode project.
+     */
+    public function forTenant(string $tenantId): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'tenant_id' => $tenantId,
+            'user_id' => null,
+        ]);
     }
 
     /**

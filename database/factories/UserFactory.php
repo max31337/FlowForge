@@ -32,6 +32,7 @@ class UserFactory extends Factory
             'avatar' => null,
             'provider' => null,
             'provider_id' => null,
+            'tenant_id' => null, // default personal unless overridden
         ];
     }
 
@@ -74,6 +75,16 @@ class UserFactory extends Factory
             'tenant_id' => null,
             'email' => 'admin@' . fake()->domainName(),
             'name' => fake()->name() . ' (Admin)',
+        ]);
+    }
+
+    /**
+     * Personal (individual) user with no tenant context.
+     */
+    public function personal(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'tenant_id' => null,
         ]);
     }
 
