@@ -8,8 +8,9 @@
      x-transition:leave="transition ease-in duration-100"
      x-transition:leave-start="opacity-100"
      x-transition:leave-end="opacity-0"
-     class="fixed top-4 right-4 z-50 max-w-sm w-full pointer-events-auto"
-     x-init="setTimeout(() => show = false, {{ $duration }})">
+    class="fixed top-4 right-4 z-50 max-w-sm w-full pointer-events-auto"
+    x-init="setTimeout(() => show = false, {{ $duration }})"
+    x-on:close-toasts.window="show = false">
     
     <div class="relative rounded-lg shadow-2xl border backdrop-blur-xl overflow-hidden
                 {{ $type === 'success' ? 'bg-black/90 border-red-500/30' : '' }}

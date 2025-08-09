@@ -105,8 +105,8 @@ class CreateTaskForm extends TenantAwareComponent
 
             Task::create($data);
 
-            // Flash success message first
-            session()->flash('message', 'Task created successfully!');
+            // Dispatch global toast
+            $this->dispatch('toast', type: 'success', title: 'Task Created', message: 'Task created successfully!', duration: 4000);
             
             // Close modal and reset form
             $this->closeModal();
@@ -116,7 +116,7 @@ class CreateTaskForm extends TenantAwareComponent
             $this->dispatch('refresh-task-list');
             
         } catch (\Exception $e) {
-            session()->flash('error', 'Unable to create task: ' . $e->getMessage());
+            $this->dispatch('toast', type: 'error', title: 'Create Failed', message: 'Unable to create task: ' . $e->getMessage(), duration: 6000);
             // Don't close modal on error, let user try again
         }
     }

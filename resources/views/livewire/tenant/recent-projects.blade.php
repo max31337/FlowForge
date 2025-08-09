@@ -1,13 +1,14 @@
+<div>
 <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800">
     <div class="p-6 border-b border-gray-200 dark:border-zinc-700">
         <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Projects</h3>
             @if($this->projects->count() > 0)
                 <button 
-                    wire:click="toggleShowAll" 
+                    wire:click="$dispatch('open-modal','projectsModal')" 
                     class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 transition-colors duration-200"
                 >
-                    {{ $showAll ? 'Show Less' : 'Show All' }}
+                    View All
                 </button>
             @endif
         </div>
@@ -79,9 +80,11 @@
             
             @can('manage_projects')
                 <div class="mt-6 text-center">
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out">
-                        <i class="fas fa-plus mr-2"></i>Create New Project
-                    </button>
+                    <x-pines-button 
+                        icon='<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>'
+                        x-on:click="window.dispatchEvent(new CustomEvent('close-toasts')); window.dispatchEvent(new CustomEvent('open-modal', { detail: 'projectsModal' })); setTimeout(() => Livewire.dispatch('open-project-modal'), 120)">
+                        Create New Project
+                    </x-pines-button>
                 </div>
             @endcan
         @else
@@ -93,11 +96,35 @@
                 <p class="text-gray-600 dark:text-gray-400 mb-4">Get started by creating your first project</p>
                 
                 @can('manage_projects')
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out">
-                        <i class="fas fa-plus mr-2"></i>Create Project
-                    </button>
+                    <x-pines-button 
+                        icon='<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>'
+                        x-on:click="window.dispatchEvent(new CustomEvent('close-toasts')); window.dispatchEvent(new CustomEvent('open-modal', { detail: 'projectsModal' })); setTimeout(() => Livewire.dispatch('open-project-modal'), 120)">
+                        Create Project
+                    </x-pines-button>
                 @endcan
             </div>
         @endif
     </div>
+</div>
+
+<!-- Projects Modal -->
+<x-modal name="projectsModal" maxWidth="6xl">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-700">
+        <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">All Projects</h3>
+            @can('create_projects')
+                <x-pines-button 
+                    size="sm"
+                    icon='<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>'
+                    x-on:click="window.dispatchEvent(new CustomEvent('close-toasts')); Livewire.dispatch('open-project-modal')">
+                    Add Project
+                </x-pines-button>
+            @endcan
+        </div>
+    </div>
+    <div class="p-0">
+        <livewire:tenant.projects.project-list :embedded="true" />
+    </div>
+</x-modal>
+
 </div>

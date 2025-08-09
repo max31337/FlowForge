@@ -1,14 +1,16 @@
-@props(['title' => '', 'subtitle' => ''])
+@props(['title' => '', 'subtitle' => '', 'embedded' => false])
 
-<div class="min-h-screen bg-black text-white relative overflow-hidden">
+<div class="{{ $embedded ? 'bg-transparent text-gray-900 dark:text-white' : 'min-h-screen bg-black text-white' }} relative overflow-hidden">
     <!-- Abstract Background Elements -->
-    <x-abstract-bg variant="geometric1" position="top-right" />
-    <x-abstract-bg variant="dots" position="bottom-left" />
-    <x-abstract-bg variant="organic" position="center" />
+    @unless($embedded)
+        <x-abstract-bg variant="geometric1" position="top-right" />
+        <x-abstract-bg variant="dots" position="bottom-left" />
+        <x-abstract-bg variant="organic" position="center" />
+    @endunless
     
     <!-- Main Content -->
     <div class="relative z-10">
-        @if($title || $subtitle)
+    @if(($title || $subtitle) && !$embedded)
             <div class="bg-black/50 border-b border-red-500/20 backdrop-blur-xl">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     @if($title)
@@ -21,13 +23,15 @@
             </div>
         @endif
         
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="{{ $embedded ? 'px-4 sm:px-6 lg:px-8 py-6' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8' }}">
             {{ $slot }}
         </main>
     </div>
     
     <!-- Global Toast Container -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    @unless($embedded)
+        <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    @endunless
 </div>
 
 <style>

@@ -1,13 +1,14 @@
+<div>
 <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:ring-zinc-800">
     <div class="p-6 border-b border-gray-200 dark:border-zinc-700">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Tasks</h3>
             @if($this->tasks->count() > 0)
                 <button 
-                    wire:click="toggleShowAll" 
+                    wire:click="$dispatch('open-modal','tasksModal')" 
                     class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 transition-colors duration-200"
                 >
-                    {{ $showAll ? 'Show Less' : 'Show All' }}
+                    View All
                 </button>
             @endif
         </div>
@@ -168,4 +169,16 @@
             </div>
         @endif
     </div>
+</div>
+
+<!-- Tasks Modal -->
+<x-modal name="tasksModal" maxWidth="6xl">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-700">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">All Tasks</h3>
+    </div>
+    <div class="p-6">
+        <livewire:tenant.tasks.task-list :embedded="true" />
+    </div>
+</x-modal>
+
 </div>

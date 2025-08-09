@@ -206,8 +206,8 @@ class TaskList extends TenantAwareComponent
 
             Task::create($data);
 
-            // Flash success message first
-            session()->flash('message', 'Task created successfully!');
+            // Dispatch global toast
+            $this->dispatch('toast', type: 'success', title: 'Task Created', message: 'Task created successfully!', duration: 4000);
             
             // Close modal and reset form
             $this->closeCreateModal();
@@ -220,7 +220,7 @@ class TaskList extends TenantAwareComponent
             // Re-throw validation exceptions to show in UI
             throw $e;
         } catch (\Exception $e) {
-            session()->flash('error', 'Unable to create task: ' . $e->getMessage());
+            $this->dispatch('toast', type: 'error', title: 'Create Failed', message: 'Unable to create task: ' . $e->getMessage(), duration: 6000);
             // Don't close modal on error, let user try again
         }
     }
@@ -243,8 +243,8 @@ class TaskList extends TenantAwareComponent
 
             $this->editingTask->update($data);
 
-            // Flash success message first
-            session()->flash('message', 'Task updated successfully!');
+            // Dispatch global toast
+            $this->dispatch('toast', type: 'success', title: 'Task Updated', message: 'Task updated successfully!', duration: 4000);
             
             // Close modal and reset form
             $this->closeEditModal();
@@ -254,7 +254,7 @@ class TaskList extends TenantAwareComponent
             $this->dispatch('refresh-task-list');
             
         } catch (\Exception $e) {
-            session()->flash('error', 'Unable to update task: ' . $e->getMessage());
+            $this->dispatch('toast', type: 'error', title: 'Update Failed', message: 'Unable to update task: ' . $e->getMessage(), duration: 6000);
             // Don't close modal on error, let user try again
         }
     }
@@ -269,8 +269,8 @@ class TaskList extends TenantAwareComponent
         $task = Task::where('tenant_id', tenant('id'))->findOrFail($taskId);
         $task->delete();
 
-        $this->dispatch('task-deleted');
-        session()->flash('message', 'Task deleted successfully!');
+    $this->dispatch('task-deleted');
+    $this->dispatch('toast', type: 'success', title: 'Task Deleted', message: 'Task deleted successfully!', duration: 4000);
     }
 
     public function toggleTaskStatus($taskId)
@@ -287,11 +287,13 @@ class TaskList extends TenantAwareComponent
                 'status' => 'pending',
                 'completed_at' => null,
             ]);
+            $this->dispatch('toast', type: 'success', title: 'Task Reopened', message: 'Task marked as pending.', duration: 3000);
         } else {
             $task->update([
                 'status' => 'completed',
                 'completed_at' => now(),
             ]);
+            $this->dispatch('toast', type: 'success', title: 'Task Completed', message: 'Task marked as completed.', duration: 3000);
         }
 
         $this->dispatch('task-status-changed');

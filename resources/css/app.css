@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Cloak elements (e.g., theme toggle icons) until Alpine initializes */
+[x-cloak] { display: none !important; }
+
 /* Base Styles */
 @layer base {
     html {

@@ -1,12 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.sidebar-app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8 bg-white dark:bg-zinc-950">
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
             User Management
         </h1>
-        <a href="{{ route('tenant.dashboard') }}" 
+    <a href="{{ dashboard_route() }}" 
            class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out">
             <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
         </a>

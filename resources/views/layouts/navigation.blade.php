@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-dark-900/80 backdrop-blur-md border-b border-gray-800 shadow-lg relative z-20">
+<nav x-data="{ open: false }" class="bg-white/70 dark:bg-dark-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-lg relative z-20 transition-colors">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -11,7 +11,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
                         </div>
-                        <span class="text-xl font-bold text-gradient">FlowForge</span>
+                        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-orange-400 dark:from-red-400 dark:to-orange-300">FlowForge</span>
                     </a>
                 </div>
 
@@ -58,6 +58,7 @@
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6 gap-3">
+                <x-theme-toggle />
                 @guest
                     <!-- Guest Navigation -->
                     <a href="{{ route('login') }}" class="btn-ghost">
@@ -78,13 +79,13 @@
                     <!-- User Avatar and Dropdown -->
                     <x-dropdown align="right" width="64">
                         <x-slot name="trigger">
-                            <button class="flex items-center space-x-3 p-2 rounded-lg bg-dark-800/50 border border-gray-700 hover:bg-dark-700/50 hover:border-gray-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-dark-950">
+                            <button class="flex items-center space-x-3 p-2 rounded-lg bg-gray-100 dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-dark-700/50 hover:border-gray-400 dark:hover:border-gray-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-dark-950">
                                 <div class="w-8 h-8 bg-gradient-to-br from-accent-500 to-accent-700 rounded-full flex items-center justify-center text-white text-sm font-semibold">
                                     {{ substr(Auth::user()->name, 0, 1) }}
                                 </div>
                                 <div class="text-left">
-                                    <div class="text-sm font-medium text-white">{{ Auth::user()->name }}</div>
-                                    <div class="text-xs text-gray-400">{{ Auth::user()->email }}</div>
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{ Auth::user()->name }}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ Auth::user()->email }}</div>
                                 </div>
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>

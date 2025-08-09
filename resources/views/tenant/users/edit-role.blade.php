@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.sidebar-app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8 bg-white dark:bg-zinc-950">
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
             Edit User Role
@@ -14,7 +14,7 @@
 
     <div class="max-w-2xl mx-auto">
         <!-- User Info Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6 mb-6">
             <div class="flex items-center mb-4">
                 <div class="flex-shrink-0 h-12 w-12">
                     <div class="h-12 w-12 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
@@ -87,9 +87,9 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end space-x-4">
+          <div class="flex justify-end space-x-4">
                     <a href="{{ route('tenant.users.index') }}" 
-                       class="bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out">
+              class="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-gray-800 dark:text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out">
                         Cancel
                     </a>
                     <button type="submit" 

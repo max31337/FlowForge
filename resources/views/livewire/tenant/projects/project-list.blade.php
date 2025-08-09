@@ -1,17 +1,13 @@
 <div>
-    <x-pines-layout title="Projects" subtitle="Manage and organize your projects">
+    <x-pines-layout title="Projects" subtitle="Manage your organization's projects" :embedded="true">
         
-        <!-- Header Actions -->
-        <x-pines-card class="mb-8">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <!-- Header with actions on the right -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Projects</h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Manage your organization's projects</p>
+            </div>
             <div class="flex items-center gap-3">
-                @can('create_projects')
-                    <x-pines-button wire:click="openCreateModal" 
-                                    icon='<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>'>
-                        New Project
-                    </x-pines-button>
-                @endcan
-                
                 <x-pines-button wire:click="$refresh" 
                                 wire:loading.attr="disabled"
                                 variant="secondary"
@@ -19,9 +15,11 @@
                     <span wire:loading.remove>Refresh</span>
                     <span wire:loading>Loading...</span>
                 </x-pines-button>
+                @can('create_projects')
+                    @livewire('tenant.projects.create-project-form')
+                @endcan
             </div>
         </div>
-    </x-pines-card>
     
     <!-- Filters Section -->
     <x-pines-card class="mb-8">
@@ -35,10 +33,10 @@
                 wire:model.live="statusFilter" 
                 label="Status" 
                 placeholder="All Statuses">
-                <option value="active" class="bg-black text-white">Active</option>
-                <option value="completed" class="bg-black text-white">Completed</option>
-                <option value="on_hold" class="bg-black text-white">On Hold</option>
-                <option value="cancelled" class="bg-black text-white">Cancelled</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="on_hold">On Hold</option>
+                <option value="cancelled">Cancelled</option>
             </x-pines-select>
             
             <x-pines-select 
@@ -46,7 +44,7 @@
                 label="Category" 
                 placeholder="All Categories">
                 @foreach($this->categories as $category)
-                    <option value="{{ $category->id }}" class="bg-black text-white">{{ $category->name }}</option>
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
             </x-pines-select>
             
@@ -54,10 +52,10 @@
                 wire:model.live="sortBy" 
                 label="Sort By" 
                 placeholder="Default">
-                <option value="name" class="bg-black text-white">Name</option>
-                <option value="created_at" class="bg-black text-white">Date Created</option>
-                <option value="updated_at" class="bg-black text-white">Last Updated</option>
-                <option value="status" class="bg-black text-white">Status</option>
+                <option value="name">Name</option>
+                <option value="created_at">Date Created</option>
+                <option value="updated_at">Last Updated</option>
+                <option value="status">Status</option>
             </x-pines-select>
         </div>
     </x-pines-card>
@@ -68,40 +66,44 @@
             <x-pines-card class="group hover:scale-105 transition-transform duration-300">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex-1">
-                        <h3 class="text-lg font-semibold text-white group-hover:text-red-400 transition-colors">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                             {{ $project->name }}
                         </h3>
                         @if($project->category)
-                            <span class="inline-block px-2 py-1 text-xs font-medium bg-red-500/20 text-red-300 rounded-full mt-2">
+                            <span class="inline-block px-2 py-1 text-xs font-medium rounded-full mt-2 bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-300">
                                 {{ $project->category->name }}
                             </span>
                         @endif
                     </div>
                     
                     <div class="flex items-center space-x-2">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                            @if($project->status === 'active') bg-green-500/20 text-green-300
-                            @elseif($project->status === 'completed') bg-blue-500/20 text-blue-300
-                            @elseif($project->status === 'on_hold') bg-yellow-500/20 text-yellow-300
-                            @else bg-red-500/20 text-red-300 @endif">
+                        @php
+                            $statusClass = match($project->status) {
+                                'active' => 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-300',
+                                'completed' => 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300',
+                                'on_hold' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-300',
+                                default => 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-300',
+                            };
+                        @endphp
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
                             {{ ucfirst(str_replace('_', ' ', $project->status)) }}
                         </span>
                     </div>
                 </div>
                 
                 @if($project->description)
-                    <p class="text-gray-400 text-sm mb-4 line-clamp-3">{{ $project->description }}</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">{{ $project->description }}</p>
                 @endif
                 
                 <!-- Project Stats -->
-                <div class="grid grid-cols-2 gap-4 mb-4 p-3 bg-black/20 rounded-lg">
+                <div class="grid grid-cols-2 gap-4 mb-4 p-3 bg-gray-50 dark:bg-black/20 rounded-lg">
                     <div class="text-center">
-                        <div class="text-xl font-bold text-white">{{ $project->tasks_count ?? 0 }}</div>
-                        <div class="text-xs text-gray-400">Tasks</div>
+                        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ $project->tasks_count ?? 0 }}</div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400">Tasks</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-xl font-bold text-red-400">{{ $project->completed_tasks_count ?? 0 }}</div>
-                        <div class="text-xs text-gray-400">Completed</div>
+                        <div class="text-xl font-bold text-red-600 dark:text-red-400">{{ $project->completed_tasks_count ?? 0 }}</div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400">Completed</div>
                     </div>
                 </div>
                 
@@ -112,19 +114,19 @@
                     $progress = $total > 0 ? ($completed / $total) * 100 : 0;
                 @endphp
                 <div class="mb-4">
-                    <div class="flex justify-between text-xs text-gray-400 mb-1">
+                    <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
                         <span>Progress</span>
                         <span>{{ number_format($progress, 0) }}%</span>
                     </div>
-                    <div class="w-full bg-black/20 rounded-full h-2">
+                    <div class="w-full bg-gray-200 dark:bg-black/20 rounded-full h-2">
                         <div class="bg-gradient-to-r from-red-500 to-red-400 h-2 rounded-full transition-all duration-300" 
                              style="width: {{ $progress }}%"></div>
                     </div>
                 </div>
                 
                 <!-- Actions -->
-                <div class="flex items-center justify-between pt-4 border-t border-red-500/10">
-                    <div class="text-xs text-gray-400">
+                <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-red-500/10">
+                    <div class="text-xs text-gray-600 dark:text-gray-400">
                         {{ $project->created_at->diffForHumans() }}
                     </div>
                     
@@ -155,16 +157,11 @@
         @empty
             <div class="col-span-full">
                 <x-pines-card class="text-center py-12">
-                    <svg class="mx-auto h-16 w-16 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
-                    <h3 class="text-lg font-medium text-white mb-2">No projects found</h3>
-                    <p class="text-gray-400 mb-6">Get started by creating your first project.</p>
-                    @can('create_projects')
-                        <x-pines-button wire:click="openCreateModal">
-                            Create Project
-                        </x-pines-button>
-                    @endcan
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No projects found</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Get started by creating your first project.</p>
                 </x-pines-card>
             </div>
         @endforelse
@@ -177,107 +174,11 @@
         </div>
     @endif
 
-    <!-- Create Project Modal -->
-    @if($showCreateModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto" 
-             aria-labelledby="modal-title" 
-             role="dialog" 
-             aria-modal="true"
-             x-data="{ show: true }"
-             x-show="show"
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0">
-            
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm transition-opacity" 
-                     @click="$wire.closeCreateModal()"></div>
-
-                <div class="inline-block align-bottom bg-black/90 backdrop-blur-xl rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-red-500/20"
-                     x-transition:enter="ease-out duration-300"
-                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                     x-transition:leave="ease-in duration-200"
-                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-                    
-                    <form wire:submit="createProject">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-lg font-semibold text-white" id="modal-title">
-                                    Create New Project
-                                </h3>
-                                <button type="button" 
-                                        wire:click="closeCreateModal"
-                                        class="text-gray-400 hover:text-white transition-colors">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-
-                            <div class="space-y-4">
-                                <x-pines-input 
-                                    wire:model="projectForm.name"
-                                    label="Project Name"
-                                    required
-                                    :error="$errors->first('projectForm.name')"
-                                    placeholder="Enter project name" />
-
-                                <x-pines-textarea 
-                                    wire:model="projectForm.description"
-                                    label="Description"
-                                    :error="$errors->first('projectForm.description')"
-                                    placeholder="Enter project description" />
-
-                                <x-pines-select 
-                                    wire:model="projectForm.category_id"
-                                    label="Category"
-                                    :error="$errors->first('projectForm.category_id')"
-                                    placeholder="Select a category">
-                                    @foreach($this->categories as $category)
-                                        <option value="{{ $category->id }}" class="bg-black text-white">{{ $category->name }}</option>
-                                    @endforeach
-                                </x-pines-select>
-
-                                <x-pines-select 
-                                    wire:model="projectForm.status"
-                                    label="Status"
-                                    :error="$errors->first('projectForm.status')"
-                                    placeholder="Select status">
-                                    <option value="active" class="bg-black text-white">Active</option>
-                                    <option value="on_hold" class="bg-black text-white">On Hold</option>
-                                    <option value="completed" class="bg-black text-white">Completed</option>
-                                    <option value="cancelled" class="bg-black text-white">Cancelled</option>
-                                </x-pines-select>
-                            </div>
-                        </div>
-
-                        <div class="px-6 py-4 bg-black/20 border-t border-red-500/10 flex justify-end space-x-3">
-                            <x-pines-button 
-                                type="button"
-                                wire:click="closeCreateModal"
-                                variant="secondary">
-                                Cancel
-                            </x-pines-button>
-                            <x-pines-button 
-                                type="submit"
-                                :loading="$wire.creating">
-                                Create Project
-                            </x-pines-button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endif
+    <!-- Create Project Modal moved to its own component -->
 
     <!-- Edit Project Modal -->
     @if($showEditModal && $editingProject)
-        <div class="fixed inset-0 z-50 overflow-y-auto" 
+    <div class="fixed inset-0 z-50 overflow-y-auto" 
              aria-labelledby="modal-title" 
              role="dialog" 
              aria-modal="true"
@@ -291,10 +192,10 @@
              x-transition:leave-end="opacity-0">
             
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm transition-opacity" 
+                <div class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm transition-opacity" 
                      @click="$wire.closeEditModal()"></div>
 
-                <div class="inline-block align-bottom bg-black/90 backdrop-blur-xl rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-red-500/20"
+                <div class="inline-block align-bottom bg-white dark:bg-zinc-900 backdrop-blur-xl rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-200 dark:border-red-500/20"
                      x-transition:enter="ease-out duration-300"
                      x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                      x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
@@ -305,12 +206,12 @@
                     <form wire:submit="updateProject">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-lg font-semibold text-white" id="modal-title">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="modal-title">
                                     Edit Project
                                 </h3>
                                 <button type="button" 
                                         wire:click="closeEditModal"
-                                        class="text-gray-400 hover:text-white transition-colors">
+                    class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white transition-colors">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>
@@ -337,7 +238,7 @@
                                     :error="$errors->first('projectForm.category_id')"
                                     placeholder="Select a category">
                                     @foreach($this->categories as $category)
-                                        <option value="{{ $category->id }}" class="bg-black text-white">{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </x-pines-select>
 
@@ -346,15 +247,15 @@
                                     label="Status"
                                     :error="$errors->first('projectForm.status')"
                                     placeholder="Select status">
-                                    <option value="active" class="bg-black text-white">Active</option>
-                                    <option value="on_hold" class="bg-black text-white">On Hold</option>
-                                    <option value="completed" class="bg-black text-white">Completed</option>
-                                    <option value="cancelled" class="bg-black text-white">Cancelled</option>
+                                    <option value="active">Active</option>
+                                    <option value="on_hold">On Hold</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
                                 </x-pines-select>
                             </div>
                         </div>
 
-                        <div class="px-6 py-4 bg-black/20 border-t border-red-500/10 flex justify-end space-x-3">
+                        <div class="px-6 py-4 bg-gray-50 dark:bg-black/20 border-t border-gray-200 dark:border-red-500/10 flex justify-end space-x-3">
                             <x-pines-button 
                                 type="button"
                                 wire:click="closeEditModal"
@@ -363,8 +264,10 @@
                             </x-pines-button>
                             <x-pines-button 
                                 type="submit"
-                                :loading="$wire.updating">
-                                Update Project
+                                wire:loading.attr="disabled"
+                                wire:target="updateProject">
+                                <span wire:loading.remove wire:target="updateProject">Update Project</span>
+                                <span wire:loading wire:target="updateProject">Updating...</span>
                             </x-pines-button>
                         </div>
                     </form>
@@ -373,100 +276,7 @@
         </div>
     @endif
 
-    <!-- Toast Notifications -->
-    @if (session()->has('message'))
-        <x-pines-toast 
-            type="success" 
-            title="Success!" 
-            message="{{ session('message') }}" />
-    @endif        @if (session()->has('error'))
-            <x-pines-toast 
-                type="error" 
-                title="Error!" 
-                message="{{ session('error') }}" />
-        @endif
     </x-pines-layout>
 </div>
 
-@push('styles')
-<style>
-.line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-</style>
-@endpush
-
-@push('scripts')
-<script>
-document.addEventListener('livewire:init', () => {
-    Livewire.on('project-created', (event) => {
-        showToast('success', 'Success!', 'Project created successfully!');
-    });
-    
-    Livewire.on('project-updated', (event) => {
-        showToast('success', 'Success!', 'Project updated successfully!');
-    });
-    
-    Livewire.on('project-deleted', (event) => {
-        showToast('success', 'Success!', 'Project deleted successfully!');
-    });
-});
-
-function showToast(type, title, message) {
-    // Create toast container if it doesn't exist
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.className = 'fixed top-4 right-4 z-50 flex flex-col space-y-4 pointer-events-none';
-        document.body.appendChild(container);
-    }
-    
-    const toastHtml = `
-        <div x-data="{ show: true }" 
-             x-show="show" 
-             x-transition:enter="transform ease-out duration-300 transition"
-             x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-             x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
-             x-transition:leave="transition ease-in duration-100"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             x-init="setTimeout(() => show = false, 5000)"
-             class="max-w-sm w-full pointer-events-auto">
-            <div class="relative rounded-lg shadow-2xl border backdrop-blur-xl overflow-hidden bg-black/90 border-red-500/30">
-                <div class="absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent"></div>
-                <div class="relative p-4">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <div class="flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full">
-                                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="ml-3 flex-1">
-                            <p class="text-sm font-semibold text-white">${title}</p>
-                            <p class="text-sm text-gray-300 mt-1">${message}</p>
-                        </div>
-                        <div class="ml-4 flex-shrink-0 flex">
-                            <button @click="show = false" class="inline-flex text-gray-400 hover:text-white focus:outline-none focus:text-white transition-colors duration-200">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    const toastElement = document.createElement('div');
-    toastElement.innerHTML = toastHtml;
-    container.appendChild(toastElement.firstElementChild);
-}
-</script>
-@endpush
+<!-- styles for this view were removed from push to avoid Blade stack parsing issues -->

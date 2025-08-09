@@ -20,8 +20,7 @@ class ProjectList extends TenantAwareComponent
     public $showInactive = false;
     public $perPage = 10;
 
-    // Project creation/editing properties
-    public $showCreateModal = false;
+    // Project editing properties
     public $showEditModal = false;
     public $editingProject = null;
     
@@ -37,8 +36,8 @@ class ProjectList extends TenantAwareComponent
     ];
 
     protected $listeners = [
-        'open-project-modal' => 'openCreateModal',
-        'close-project-modal' => 'closeCreateModal',
+        // React to external events
+        'refresh-project-list' => '$refresh',
     ];
 
     protected $queryString = [
@@ -108,24 +107,7 @@ class ProjectList extends TenantAwareComponent
         $this->resetPage();
     }
 
-    public function openCreateModal()
-    {
-        $this->resetProjectForm();
-        $this->showCreateModal = true;
-    }
-
-    public function closeCreateModal()
-    {
-        $this->showCreateModal = false;
-        $this->resetProjectForm();
-        $this->resetValidation();
-        
-        // Clear any error messages
-        session()->forget(['error']);
-        
-        // Dispatch event to close modal via JavaScript
-        $this->dispatch('close-modal');
-    }
+    // Create flow moved to CreateProjectForm component
 
     public function closeEditModal()
     {
@@ -141,57 +123,7 @@ class ProjectList extends TenantAwareComponent
         $this->dispatch('$refresh');
     }
 
-    public function createProject()
-    {
-        try {
-            // Validate the form
-            $this->validate();
-
-            $data = $this->projectForm;
-            
-            // Get tenant_id directly - BelongsToTenant trait will handle this automatically
-            // But let's explicitly set it to be sure
-            if (tenancy()->initialized && tenant('id')) {
-                $data['tenant_id'] = tenant('id');
-            } else {
-                // Fallback: try to get tenant from current domain
-                $host = request()->getHost();
-                $tenant = \App\Models\Tenant::whereHas('domains', function($query) use ($host) {
-                    $query->where('domain', $host);
-                })->first();
-                
-                if ($tenant) {
-                    $data['tenant_id'] = $tenant->id;
-                } else {
-                    throw new \Exception('Unable to determine tenant context');
-                }
-            }
-            
-            // Remove empty values (but keep tenant_id)
-            $data = array_filter($data, function($value, $key) {
-                return $key === 'tenant_id' || ($value !== null && $value !== '');
-            }, ARRAY_FILTER_USE_BOTH);
-
-            Project::create($data);
-
-            // Flash success message first
-            session()->flash('message', 'Project created successfully!');
-            
-            // Close modal and reset form
-            $this->closeCreateModal();
-            
-            // Dispatch events for other components to update
-            $this->dispatch('project-created');
-            $this->dispatch('refresh-project-list');
-            
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Re-throw validation exceptions to show in UI
-            throw $e;
-        } catch (\Exception $e) {
-            session()->flash('error', 'Unable to create project: ' . $e->getMessage());
-            // Don't close modal on error, let user try again
-        }
-    }
+    // createProject removed
 
     public function updateProject()
     {
@@ -213,8 +145,8 @@ class ProjectList extends TenantAwareComponent
 
             $this->editingProject->update($data);
 
-            // Flash success message first
-            session()->flash('message', 'Project updated successfully!');
+            // Global toast (top-right)
+            $this->dispatch('toast', type: 'success', title: 'Success', message: 'Project updated successfully!', duration: 5000);
             
             // Close modal and reset form
             $this->closeEditModal();
@@ -224,7 +156,7 @@ class ProjectList extends TenantAwareComponent
             $this->dispatch('refresh-project-list');
             
         } catch (\Exception $e) {
-            session()->flash('error', 'Unable to update project: ' . $e->getMessage());
+            $this->dispatch('toast', type: 'error', title: 'Error', message: 'Unable to update project: ' . $e->getMessage(), duration: 6000);
             // Don't close modal on error, let user try again
         }
     }
@@ -238,16 +170,16 @@ class ProjectList extends TenantAwareComponent
             
             // Check if project has tasks
             if ($project->tasks()->count() > 0) {
-                session()->flash('error', 'Cannot delete project with existing tasks.');
+                $this->dispatch('toast', type: 'error', title: 'Action blocked', message: 'Cannot delete project with existing tasks.', duration: 6000);
                 return;
             }
             
             $project->delete();
             
             $this->dispatch('project-deleted');
-            session()->flash('message', 'Project deleted successfully!');
+            $this->dispatch('toast', type: 'success', title: 'Deleted', message: 'Project deleted successfully!', duration: 5000);
         } catch (\Exception $e) {
-            session()->flash('error', 'Unable to delete project: ' . $e->getMessage());
+            $this->dispatch('toast', type: 'error', title: 'Error', message: 'Unable to delete project: ' . $e->getMessage(), duration: 6000);
         }
     }
 

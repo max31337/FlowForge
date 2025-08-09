@@ -33,26 +33,28 @@ class QuickActions extends TenantAwareComponent
         }
 
         // Project management actions
-        if ($user->hasPermission('manage_projects')) {
+    if ($user->hasPermission('manage_projects')) {
             $actions[] = [
                 'title' => 'New Project',
                 'description' => 'Create a new project for your team',
                 'icon' => 'fas fa-project-diagram',
                 'color' => 'blue',
                 'action' => 'create-project',
-                'url' => '#', // TODO: Replace with actual route
+        // Send to Projects; page can open a modal or have a create button
+        'url' => route('tenant.projects.index'),
             ];
         }
 
         // Task management actions
-        if ($user->hasPermission('manage_tasks')) {
+    if ($user->hasPermission('manage_tasks')) {
             $actions[] = [
                 'title' => 'New Task',
                 'description' => 'Add a task to an existing project',
                 'icon' => 'fas fa-plus-circle',
                 'color' => 'green',
                 'action' => 'create-task',
-                'url' => '#', // TODO: Replace with actual route
+        // Send to Tasks; page can open a create form/modal
+        'url' => route('tenant.tasks.index'),
             ];
         }
 
