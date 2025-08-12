@@ -24,6 +24,7 @@ class CreateTenantsTable extends Migration
             $table->string('email')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
             $table->string('plan')->default('free');
+            $table->enum('priority', ['startup', 'agency', 'enterprise'])->default('startup');
             $table->boolean('active')->default(true);
 
             $table->timestamps();
